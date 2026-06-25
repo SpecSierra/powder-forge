@@ -2,6 +2,7 @@
 #include <cstring>
 #include "common/RasterGeometry.h"
 #include "FontReader.h"
+#include "TrueTypeFont.h"
 #include "VideoBuffer.h"
 #include "RasterDrawMethods.h"
 
@@ -231,11 +232,45 @@ void RasterDrawMethods<Derived>::BlendRGBAImage(pixel_rgba const *data, Rect<int
 template<typename Derived>
 int RasterDrawMethods<Derived>::BlendChar(Vec2<int> pos, String::value_type ch, RGBA colour)
 {
-	FontReader reader(ch);
-	auto const rect = RectSized(Vec2(0, -2), Vec2(reader.GetWidth(), FONT_H));
-	for (auto off : rect.template Range<TOP_TO_BOTTOM, LEFT_TO_RIGHT>())
-		BlendPixel(pos + off, colour.NoAlpha().WithAlpha(reader.NextPixel() * colour.Alpha / 3));
-	return reader.GetWidth();
+	// Private-use area (icons) and non-TTF fallback → legacy bitmap font.
+	if (ch >= 0xE000 || !TrueTypeFont::Ref().IsLoaded())
+	{
+		FontReader reader(ch);
+		auto const rect = RectSized(Vec2(0, -2), Vec2(reader.GetWidth(), FONT_H));
+		for (auto off : rect.template Range<TOP_TO_BOTTOM, LEFT_TO_RIGHT>())
+			BlendPixel(pos + off, colour.NoAlpha().WithAlpha(reader.NextPixel() * colour.Alpha / 3));
+		return reader.GetWidth();
+	}
+
+	// Normal Unicode → TrueType renderer.
+	auto &ttf = TrueTypeFont::Ref();
+	const auto *glyph = ttf.GetGlyph(int(ch));
+	if (!glyph)
+	{
+		// Codepoint not in font – fall back to bitmap font for this char.
+		FontReader reader(ch);
+		auto const rect = RectSized(Vec2(0, -2), Vec2(reader.GetWidth(), FONT_H));
+		for (auto off : rect.template Range<TOP_TO_BOTTOM, LEFT_TO_RIGHT>())
+			BlendPixel(pos + off, colour.NoAlpha().WithAlpha(reader.NextPixel() * colour.Alpha / 3));
+		return reader.GetWidth();
+	}
+
+	// Space or invisible glyph with valid advance.
+	if (glyph->bitmap.empty())
+		return glyph->advance;
+
+	RGB const rgb = colour.NoAlpha();
+	for (int y = 0; y < glyph->h; ++y)
+	{
+		for (int x = 0; x < glyph->w; ++x)
+		{
+			uint8_t a = glyph->bitmap[y * glyph->w + x];
+			if (a)
+				BlendPixel(pos + Vec2<int>{ x + glyph->xoff, y + glyph->yoff },
+				           rgb.WithAlpha(uint8_t(a * colour.Alpha / 255)));
+		}
+	}
+	return glyph->advance;
 }
 
 template<typename Derived>
@@ -336,7 +371,14 @@ void RasterDrawMethods<Derived>::Clear()
 template<typename Derived>
 int RasterDrawMethods<Derived>::CharWidth(String::value_type ch)
 {
-	return FontReader(ch).GetWidth();
+	if (ch >= 0xE000 || !TrueTypeFont::Ref().IsLoaded())
+		return FontReader(ch).GetWidth();
+
+	// Use TTF advance for normal codepoints.
+	const auto *glyph = TrueTypeFont::Ref().GetGlyph(int(ch));
+	if (!glyph)
+		return FontReader(ch).GetWidth();
+	return glyph->advance;
 }
 
 template<typename Derived>

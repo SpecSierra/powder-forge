@@ -3,6 +3,7 @@ graphics_files = files(
 	'Graphics.cpp',
 	'RasterGraphics.cpp',
 	'FontReader.cpp',
+	'TrueTypeFont.cpp',
 )
 powder_graphics_files = files(
 	'Renderer.cpp',

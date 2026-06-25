@@ -425,7 +425,7 @@ else
 	]
 endif
 
-project_inc = include_directories([ 'src', 'resources' ])
+project_inc = include_directories([ 'src', 'resources', '/usr/include' ])
 
 if host_platform == 'windows'
 	ident_platform = is_64bit ? 'WIN64' : 'WIN32'
