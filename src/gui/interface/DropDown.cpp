@@ -40,7 +40,8 @@ public:
 	void OnDraw() override
 	{
 		Graphics * g = GetGraphics();
-		g->DrawFilledRect(RectSized(Position, Size), 0x000000_rgb);
+		g->DrawFilledRect(RectSized(Position, Size), 0x1E1E2E_rgb);
+		g->DrawRect(RectSized(Position, Size), 0x45475A_rgb);
 	}
 	void setOption(String option)
 	{

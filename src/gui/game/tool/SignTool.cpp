@@ -219,8 +219,8 @@ void SignWindow::OnDraw()
 {
 	Graphics * g = GetGraphics();
 
-	g->DrawFilledRect(RectSized(Position - Vec2{ 1, 1 }, Size + Vec2{ 2, 2 }), 0x000000_rgb);
-	g->DrawRect(RectSized(Position, Size), 0xC8C8C8_rgb);
+	g->DrawFilledRect(RectSized(Position - Vec2{ 1, 1 }, Size + Vec2{ 2, 2 }), 0x1E1E2E_rgb);
+	g->DrawRect(RectSized(Position, Size), 0x45475A_rgb);
 }
 
 std::unique_ptr<VideoBuffer> SignTool::GetIcon(int toolID, Vec2<int> size)

@@ -633,5 +633,5 @@ void Textbox::Draw(const Point& screenPos)
 		g->draw_icon(screenPos.X+iconPosition.X, screenPos.Y+iconPosition.Y, Appearance.icon);
 	g->SwapClipRect(clip);
 	if(border)
-		g->DrawRect(RectSized(screenPos, Size), IsFocused() ? 0xFFFFFF_rgb : 0xA0A0A0_rgb);
+		g->DrawRect(RectSized(screenPos, Size), IsFocused() ? 0x89B4FA_rgb : 0x45475A_rgb);
 }

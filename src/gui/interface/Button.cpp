@@ -4,6 +4,7 @@
 #include "graphics/Graphics.h"
 #include "Misc.h"
 #include "Colour.h"
+#include <algorithm>
 #include <cmath>
 #include <numbers>
 
@@ -118,9 +119,50 @@ void Button::Draw(const Point& screenPos)
 	{
 		backgroundColour.Alpha = uint8_t(backgroundColour.Alpha * ((std::sin(Engine::Ref().LastTick() * std::numbers::pi * 2 / 1000) + 1) / 2));
 	}
-	g->BlendFilledRect(RectSized(Position + Vec2{ 1, 1 }, Size - Vec2{ 2, 2 }), backgroundColour);
+
+	// Fill body (inset by 1 for border, skip corner pixels)
+	if (Size.X >= 4 && Size.Y >= 4)
+	{
+		// Top strip (x: 1..W-2, y: 0)  — will be covered by border, but draw fill here for bg
+		g->BlendFilledRect(RectSized(Position + Vec2{ 1, 1 }, Size - Vec2{ 2, 2 }), backgroundColour);
+
+		// Subtle top highlight line for depth (slightly lighter than bg)
+		ui::Colour highlight(
+			uint8_t(std::min(255, int(backgroundColour.Red)   + 20)),
+			uint8_t(std::min(255, int(backgroundColour.Green) + 20)),
+			uint8_t(std::min(255, int(backgroundColour.Blue)  + 20)),
+			uint8_t(backgroundColour.Alpha / 2)
+		);
+		g->BlendLine(Position + Vec2{ 2, 1 }, Position + Vec2{ Size.X-3, 1 }, highlight);
+	}
+	else
+	{
+		g->BlendFilledRect(RectSized(Position + Vec2{ 1, 1 }, Size - Vec2{ 2, 2 }), backgroundColour);
+	}
+
 	if(Appearance.Border == 1)
-		g->BlendRect(RectSized(Position, Size), borderColour);
+	{
+		// Rounded border: draw border lines skipping the corner pixels
+		if (Size.X >= 4 && Size.Y >= 4)
+		{
+			// Top and bottom edges (skip 1 corner pixel each side)
+			g->BlendLine(Position + Vec2{ 1, 0 }, Position + Vec2{ Size.X-2, 0 }, borderColour);
+			g->BlendLine(Position + Vec2{ 1, Size.Y-1 }, Position + Vec2{ Size.X-2, Size.Y-1 }, borderColour);
+			// Left and right edges (skip 1 corner pixel each side)
+			g->BlendLine(Position + Vec2{ 0, 1 }, Position + Vec2{ 0, Size.Y-2 }, borderColour);
+			g->BlendLine(Position + Vec2{ Size.X-1, 1 }, Position + Vec2{ Size.X-1, Size.Y-2 }, borderColour);
+			// Dim corner anti-alias pixels
+			ui::Colour cornerDim(borderColour.Red, borderColour.Green, borderColour.Blue, uint8_t(borderColour.Alpha / 3));
+			g->BlendPixel(Position + Vec2{ 0, 0 }, cornerDim);
+			g->BlendPixel(Position + Vec2{ Size.X-1, 0 }, cornerDim);
+			g->BlendPixel(Position + Vec2{ 0, Size.Y-1 }, cornerDim);
+			g->BlendPixel(Position + Vec2{ Size.X-1, Size.Y-1 }, cornerDim);
+		}
+		else
+		{
+			g->BlendRect(RectSized(Position, Size), borderColour);
+		}
+	}
 	else
 	{
 		if(Appearance.Border.Top)

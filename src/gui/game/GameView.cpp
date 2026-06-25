@@ -220,8 +220,10 @@ GameView::GameView():
 	//Set up UI
 
 	scrollBar = new ui::Button(ui::Point(0,YRES+21), ui::Point(XRES, 2), "");
-	scrollBar->Appearance.BorderHover = ui::Colour(200, 200, 200);
-	scrollBar->Appearance.BorderActive = ui::Colour(200, 200, 200);
+	scrollBar->Appearance.BorderInactive = ui::Colour(69, 71, 90);
+	scrollBar->Appearance.BorderHover = ui::Colour(137, 180, 250);
+	scrollBar->Appearance.BorderActive = ui::Colour(137, 180, 250);
+	scrollBar->Appearance.BackgroundInactive = ui::Colour(49, 50, 68);
 	scrollBar->Appearance.HorizontalAlign = ui::Appearance::AlignCentre;
 	scrollBar->Appearance.VerticalAlign = ui::Appearance::AlignMiddle;
 	AddComponent(scrollBar);
@@ -813,15 +815,15 @@ void GameView::NotifySaveChanged(GameModel * sender)
 		auto upVoteButtonColor = [this](bool active) {
 			if(active)
 			{
-				upVoteButton->Appearance.BackgroundHover = (ui::Colour(20, 128, 30, 255));
-				upVoteButton->Appearance.BackgroundInactive = (ui::Colour(0, 108, 10, 255));
-				upVoteButton->Appearance.BackgroundDisabled = (ui::Colour(0, 108, 10, 255));
+				upVoteButton->Appearance.BackgroundHover = (ui::Colour(50, 160, 60, 255));
+				upVoteButton->Appearance.BackgroundInactive = (ui::Colour(30, 130, 40, 255));
+				upVoteButton->Appearance.BackgroundDisabled = (ui::Colour(30, 130, 40, 255));
 			}
 			else
 			{
-				upVoteButton->Appearance.BackgroundHover = (ui::Colour(20, 20, 20));
-				upVoteButton->Appearance.BackgroundInactive = (ui::Colour(0, 0, 0));
-				upVoteButton->Appearance.BackgroundDisabled = (ui::Colour(0, 0, 0));
+				upVoteButton->Appearance.BackgroundHover = (ui::Colour(49, 50, 68));
+				upVoteButton->Appearance.BackgroundInactive = (ui::Colour(30, 30, 46));
+				upVoteButton->Appearance.BackgroundDisabled = (ui::Colour(30, 30, 46));
 			}
 		};
 		auto upvoted = sender->GetSave()->GetID() && user && sender->GetSave()->GetVote() == 1;
@@ -831,15 +833,15 @@ void GameView::NotifySaveChanged(GameModel * sender)
 		auto downVoteButtonColor = [this](bool active) {
 			if (active)
 			{
-				downVoteButton->Appearance.BackgroundHover = (ui::Colour(128, 20, 30, 255));
-				downVoteButton->Appearance.BackgroundInactive = (ui::Colour(108, 0, 10, 255));
-				downVoteButton->Appearance.BackgroundDisabled = (ui::Colour(108, 0, 10, 255));
+				downVoteButton->Appearance.BackgroundHover = (ui::Colour(180, 40, 55, 255));
+				downVoteButton->Appearance.BackgroundInactive = (ui::Colour(150, 20, 35, 255));
+				downVoteButton->Appearance.BackgroundDisabled = (ui::Colour(150, 20, 35, 255));
 			}
 			else
 			{
-				downVoteButton->Appearance.BackgroundHover = (ui::Colour(20, 20, 20));
-				downVoteButton->Appearance.BackgroundInactive = (ui::Colour(0, 0, 0));
-				downVoteButton->Appearance.BackgroundDisabled = (ui::Colour(0, 0, 0));
+				downVoteButton->Appearance.BackgroundHover = (ui::Colour(49, 50, 68));
+				downVoteButton->Appearance.BackgroundInactive = (ui::Colour(30, 30, 46));
+				downVoteButton->Appearance.BackgroundDisabled = (ui::Colour(30, 30, 46));
 			}
 		};
 		auto downvoted = sender->GetSave()->GetID() && user && sender->GetSave()->GetVote() == -1;
@@ -907,10 +909,10 @@ void GameView::NotifySaveChanged(GameModel * sender)
 		saveSimulationButton->SetText(sender->GetSaveFile()->GetDisplayName());
 		reloadButton->Enabled = true;
 		upVoteButton->Enabled = false;
-		upVoteButton->Appearance.BackgroundDisabled = (ui::Colour(0, 0, 0));
+		upVoteButton->Appearance.BackgroundDisabled = (ui::Colour(30, 30, 46));
 		upVoteButton->Appearance.BorderDisabled = ui::Colour(100, 100, 100);
 		downVoteButton->Enabled = false;
-		downVoteButton->Appearance.BackgroundDisabled = (ui::Colour(0, 0, 0));
+		downVoteButton->Appearance.BackgroundDisabled = (ui::Colour(30, 30, 46));
 		downVoteButton->Appearance.BorderDisabled = ui::Colour(100, 100, 100);
 		tagSimulationButton->Enabled = false;
 		tagSimulationButton->SetText("[no tags set]");
@@ -922,10 +924,10 @@ void GameView::NotifySaveChanged(GameModel * sender)
 		saveSimulationButton->SetText("[untitled simulation]");
 		reloadButton->Enabled = false;
 		upVoteButton->Enabled = false;
-		upVoteButton->Appearance.BackgroundDisabled = (ui::Colour(0, 0, 0));
+		upVoteButton->Appearance.BackgroundDisabled = (ui::Colour(30, 30, 46));
 		upVoteButton->Appearance.BorderDisabled = ui::Colour(100, 100, 100),
 		downVoteButton->Enabled = false;
-		downVoteButton->Appearance.BackgroundDisabled = (ui::Colour(0, 0, 0));
+		downVoteButton->Appearance.BackgroundDisabled = (ui::Colour(30, 30, 46));
 		downVoteButton->Appearance.BorderDisabled = ui::Colour(100, 100, 100),
 		tagSimulationButton->Enabled = false;
 		tagSimulationButton->SetText("[no tags set]");
@@ -1889,8 +1891,8 @@ void GameView::DoDraw()
 	auto *g = GetGraphics();
 	for (auto x = 0; x < int(fadeout.size()); ++x)
 	{
-		g->BlendLine({ x, YRES + 1 }, { x, YRES + 18 }, 0x000000_rgb .WithAlpha(fadeout[x]));
-		g->BlendLine({ XRES - x, YRES + 1 }, { XRES - x, YRES + 18 }, 0x000000_rgb .WithAlpha(fadeout[x]));
+		g->BlendLine({ x, YRES + 1 }, { x, YRES + 18 }, 0x181825_rgb .WithAlpha(fadeout[x]));
+		g->BlendLine({ XRES - x, YRES + 1 }, { XRES - x, YRES + 18 }, 0x181825_rgb .WithAlpha(fadeout[x]));
 	}
 
 	c->Tick();
@@ -2049,14 +2051,14 @@ void GameView::enableCtrlBehaviour()
 		UpdateToolStrength();
 
 		//Show HDD save & load buttons
-		saveSimulationButton->Appearance.BackgroundInactive = saveSimulationButton->Appearance.BackgroundHover = ui::Colour(255, 255, 255);
-		saveSimulationButton->Appearance.TextInactive = saveSimulationButton->Appearance.TextHover = ui::Colour(0, 0, 0);
+		saveSimulationButton->Appearance.BackgroundInactive = saveSimulationButton->Appearance.BackgroundHover = ui::Colour(137, 180, 250);
+		saveSimulationButton->Appearance.TextInactive = saveSimulationButton->Appearance.TextHover = ui::Colour(30, 30, 46);
 
 		saveSimulationButton->Enabled = true;
 		SetSaveButtonTooltips();
 
-		searchButton->Appearance.BackgroundInactive = searchButton->Appearance.BackgroundHover = ui::Colour(255, 255, 255);
-		searchButton->Appearance.TextInactive = searchButton->Appearance.TextHover = ui::Colour(0, 0, 0);
+		searchButton->Appearance.BackgroundInactive = searchButton->Appearance.BackgroundHover = ui::Colour(137, 180, 250);
+		searchButton->Appearance.TextInactive = searchButton->Appearance.TextHover = ui::Colour(30, 30, 46);
 
 		searchButton->SetToolTip("Open a simulation from your hard drive.");
 		if (currentSaveType == 2)
@@ -2074,14 +2076,14 @@ void GameView::disableCtrlBehaviour()
 		UpdateToolStrength();
 
 		//Hide HDD save & load buttons
-		saveSimulationButton->Appearance.BackgroundInactive = ui::Colour(0, 0, 0);
-		saveSimulationButton->Appearance.BackgroundHover = ui::Colour(20, 20, 20);
-		saveSimulationButton->Appearance.TextInactive = saveSimulationButton->Appearance.TextHover = ui::Colour(255, 255, 255);
+		saveSimulationButton->Appearance.BackgroundInactive = ui::Colour(30, 30, 46);
+		saveSimulationButton->Appearance.BackgroundHover = ui::Colour(49, 50, 68);
+		saveSimulationButton->Appearance.TextInactive = saveSimulationButton->Appearance.TextHover = ui::Colour(186, 194, 222);
 		saveSimulationButton->Enabled = saveSimulationButtonEnabled && saveReuploadAllowed;
 		SetSaveButtonTooltips();
-		searchButton->Appearance.BackgroundInactive = ui::Colour(0, 0, 0);
-		searchButton->Appearance.BackgroundHover = ui::Colour(20, 20, 20);
-		searchButton->Appearance.TextInactive = searchButton->Appearance.TextHover = ui::Colour(255, 255, 255);
+		searchButton->Appearance.BackgroundInactive = ui::Colour(30, 30, 46);
+		searchButton->Appearance.BackgroundHover = ui::Colour(49, 50, 68);
+		searchButton->Appearance.TextInactive = searchButton->Appearance.TextHover = ui::Colour(186, 194, 222);
 		searchButton->SetToolTip("Find & open a simulation. Hold Ctrl to load offline saves.");
 		if (currentSaveType == 2)
 			saveSimulationButton->SetShowSplit(false);
@@ -2187,6 +2189,19 @@ void GameView::OnDraw()
 	}
 
 	std::copy_n(rendererFrame->data(), rendererFrame->Size().X * rendererFrame->Size().Y, g->Data());
+
+	// ── Modern UI: paint backgrounds for menu and sidebar areas ──────────────────
+	// Tool-button strip (YRES..YRES+MENUSIZE-1) – dark base surface
+	g->DrawFilledRect(RectSized(Vec2{ 0, YRES }, Vec2{ WINDOWW, MENUSIZE }), 0x181825_rgb);
+	// Right sidebar – slightly elevated surface
+	g->DrawFilledRect(RectSized(Vec2{ XRES, 0 }, Vec2{ BARSIZE, YRES }), 0x1E1E2E_rgb);
+	// Thin top separator between simulation and menu strip
+	g->BlendLine({ 0, YRES }, { WINDOWW-1, YRES }, 0x45475A_rgb .WithAlpha(200));
+	// Thin separator above the bottom action bar
+	g->BlendLine({ 0, Size.Y-17 }, { XRES-1, Size.Y-17 }, 0x313244_rgb .WithAlpha(180));
+	// Slightly darker bottom action bar background
+	g->DrawFilledRect(RectSized(Vec2{ 0, Size.Y-16 }, Vec2{ XRES, 16 }), 0x11111B_rgb);
+	// ─────────────────────────────────────────────────────────────────────────────
 
 	if (showBrush && selectMode == SelectNone && (!zoomEnabled || zoomCursorFixed) && activeBrush && (isMouseDown || (currentMouse.X >= 0 && currentMouse.X < XRES && currentMouse.Y >= 0 && currentMouse.Y < YRES)))
 	{
@@ -2474,8 +2489,8 @@ void GameView::OnDraw()
 		}
 
 		int textWidth = Graphics::TextSize(sampleInfo.Build()).X - 1;
-		g->BlendFilledRect(RectSized(Vec2{ XRES-20-textWidth, 12 }, Vec2{ textWidth+8, 15 }), 0x000000_rgb .WithAlpha(int(alpha*0.5f)));
-		g->BlendText({ XRES-16-textWidth, 16 }, sampleInfo.Build(), 0xFFFFFF_rgb .WithAlpha(int(alpha*0.75f)));
+		g->BlendFilledRect(RectSized(Vec2{ XRES-20-textWidth, 12 }, Vec2{ textWidth+8, 15 }), 0x1E1E2E_rgb .WithAlpha(int(alpha*0.75f)));
+		g->BlendText({ XRES-16-textWidth, 16 }, sampleInfo.Build(), 0xCDD6F4_rgb .WithAlpha(int(alpha*0.90f)));
 
 		if (wavelengthGfx)
 		{
@@ -2534,8 +2549,8 @@ void GameView::OnDraw()
 			}
 
 			auto textWidth = Graphics::TextSize(sampleInfo.Build()).X - 1;
-			g->BlendFilledRect(RectSized(Vec2{ XRES-20-textWidth, 27 }, Vec2{ textWidth+8, 14 }), 0x000000_rgb .WithAlpha(int(alpha*0.5f)));
-			g->BlendText({ XRES-16-textWidth, 30 }, sampleInfo.Build(), 0xFFFFFF_rgb .WithAlpha(int(alpha*0.75f)));
+			g->BlendFilledRect(RectSized(Vec2{ XRES-20-textWidth, 27 }, Vec2{ textWidth+8, 14 }), 0x1E1E2E_rgb .WithAlpha(int(alpha*0.75f)));
+			g->BlendText({ XRES-16-textWidth, 30 }, sampleInfo.Build(), 0xCDD6F4_rgb .WithAlpha(int(alpha*0.90f)));
 		}
 	}
 
@@ -2643,35 +2658,35 @@ void GameView::OnDraw()
 		auto textSize = Graphics::TextSize(fpsInfo.Build());
 		int textWidth = textSize.X - 1;
 		int alpha = 255-introText*5;
-		g->BlendFilledRect(RectSized(Vec2{ 12, 12 }, Vec2{ textWidth+8, textSize.Y + 5 }), 0x000000_rgb .WithAlpha(int(alpha*0.5)));
-		g->BlendText({ 16, 16 }, fpsInfo.Build(), 0x20D8FF_rgb .WithAlpha(int(alpha*0.75)));
+		g->BlendFilledRect(RectSized(Vec2{ 12, 12 }, Vec2{ textWidth+8, textSize.Y + 5 }), 0x1E1E2E_rgb .WithAlpha(int(alpha*0.75)));
+		g->BlendText({ 16, 16 }, fpsInfo.Build(), 0x89B4FA_rgb .WithAlpha(int(alpha*0.90)));
 	}
 
 	//Tooltips
 	if(infoTipPresence)
 	{
 		int infoTipAlpha = (infoTipPresence>50?50:int(infoTipPresence))*5;
-		g->BlendTextOutline({ (XRES - (Graphics::TextSize(infoTip).X - 1)) / 2, YRES / 2 - 2 }, infoTip, 0xFFFFFF_rgb .WithAlpha(infoTipAlpha));
+		g->BlendTextOutline({ (XRES - (Graphics::TextSize(infoTip).X - 1)) / 2, YRES / 2 - 2 }, infoTip, 0xCDD6F4_rgb .WithAlpha(infoTipAlpha));
 	}
 
 	if(toolTipPresence && toolTipPosition.X!=-1 && toolTipPosition.Y!=-1 && toolTip.length())
 	{
 		if (toolTipPosition.Y == Size.Y-MENUSIZE-10)
-			g->BlendTextOutline(toolTipPosition, toolTip, 0xFFFFFF_rgb .WithAlpha(toolTipPresence>51?255:toolTipPresence*5));
+			g->BlendTextOutline(toolTipPosition, toolTip, 0xCDD6F4_rgb .WithAlpha(toolTipPresence>51?255:toolTipPresence*5));
 		else
-			g->BlendText(toolTipPosition, toolTip, 0xFFFFFF_rgb .WithAlpha(toolTipPresence>51?255:toolTipPresence*5));
+			g->BlendText(toolTipPosition, toolTip, 0xCDD6F4_rgb .WithAlpha(toolTipPresence>51?255:toolTipPresence*5));
 	}
 
 	if(buttonTipShow > 0)
 	{
-		g->BlendText({ 16, Size.Y-MENUSIZE-24 }, buttonTip, 0xFFFFFF_rgb .WithAlpha(buttonTipShow>51?255:buttonTipShow*5));
+		g->BlendText({ 16, Size.Y-MENUSIZE-24 }, buttonTip, 0xBAC2DE_rgb .WithAlpha(buttonTipShow>51?255:buttonTipShow*5));
 	}
 
 	//Introduction text
 	if(introText && showHud)
 	{
-		g->BlendFilledRect(RectSized(Vec2{ 0, 0 }, WINDOW), 0x000000_rgb .WithAlpha(introText>51?102:introText*2));
-		g->BlendText({ 16, 16 }, introTextMessage, 0xFFFFFF_rgb .WithAlpha(introText>51?255:introText*5));
+		g->BlendFilledRect(RectSized(Vec2{ 0, 0 }, WINDOW), 0x1E1E2E_rgb .WithAlpha(introText>51?180:introText*3));
+		g->BlendText({ 16, 16 }, introTextMessage, 0xCDD6F4_rgb .WithAlpha(introText>51?255:introText*5));
 	}
 }
 

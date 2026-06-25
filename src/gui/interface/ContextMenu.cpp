@@ -94,6 +94,6 @@ void ContextMenu::AddItem(ContextMenuItem item)
 void ContextMenu::OnDraw()
 {
 	Graphics * g = GetGraphics();
-	g->DrawFilledRect(RectSized(Position, Size), 0x646464_rgb);
-	g->BlendRect(RectSized(Position, Size), Appearance.BackgroundInactive);
+	g->DrawFilledRect(RectSized(Position, Size), 0x181825_rgb);
+	g->DrawRect(RectSized(Position, Size), 0x45475A_rgb);
 }

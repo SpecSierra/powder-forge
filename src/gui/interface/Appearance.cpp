@@ -5,27 +5,28 @@
 
 namespace ui
 {
+	// Catppuccin Mocha dark palette
 	Appearance::Appearance():
 		texture(nullptr),
 
 		VerticalAlign(AlignMiddle),
 		HorizontalAlign(AlignCentre),
 
-		BackgroundHover(0x141414_rgb .WithAlpha(0xFF)),
-		BackgroundInactive(0x000000_rgb .WithAlpha(0xFF)),
-		BackgroundActive(0xFFFFFF_rgb .WithAlpha(0xFF)),
-		BackgroundDisabled(0x0A0A0A_rgb .WithAlpha(0xFF)),
+		BackgroundHover(0x313244_rgb .WithAlpha(0xFF)),    // Surface0: elevated hover
+		BackgroundInactive(0x1E1E2E_rgb .WithAlpha(0xFF)), // Base: dark button bg
+		BackgroundActive(0x89B4FA_rgb .WithAlpha(0xFF)),   // Blue accent when active
+		BackgroundDisabled(0x181825_rgb .WithAlpha(0xFF)), // Mantle: darker disabled
 
-		TextHover(0xFFFFFF_rgb .WithAlpha(0xFF)),
-		TextInactive(0xFFFFFF_rgb .WithAlpha(0xFF)),
-		TextActive(0x000000_rgb .WithAlpha(0xFF)),
-		TextDisabled(0x646464_rgb .WithAlpha(0xFF)),
+		TextHover(0xFFFFFF_rgb .WithAlpha(0xFF)),          // White on hover
+		TextInactive(0xBAC2DE_rgb .WithAlpha(0xFF)),       // Subtext1: normal text
+		TextActive(0x1E1E2E_rgb .WithAlpha(0xFF)),         // Dark on active bg
+		TextDisabled(0x45475A_rgb .WithAlpha(0xFF)),       // Surface1: muted disabled
 
-		BorderHover(0xFFFFFF_rgb .WithAlpha(0xFF)),
-		BorderInactive(0xC8C8C8_rgb .WithAlpha(0xFF)),
-		BorderActive(0xEBEBEB_rgb .WithAlpha(0xFF)),
-		BorderFavorite(0xFFFF00_rgb .WithAlpha(0xFF)),
-		BorderDisabled(0x646464_rgb .WithAlpha(0xFF)),
+		BorderHover(0x89B4FA_rgb .WithAlpha(0xFF)),        // Blue accent on hover
+		BorderInactive(0x45475A_rgb .WithAlpha(0xFF)),     // Surface1: subtle border
+		BorderActive(0xB4BEFE_rgb .WithAlpha(0xFF)),       // Lavender: active border
+		BorderFavorite(0xF9E2AF_rgb .WithAlpha(0xFF)),     // Yellow: favorite
+		BorderDisabled(0x313244_rgb .WithAlpha(0xFF)),     // Surface0: disabled border
 
 		Margin(1, 4),
 		Border(1),

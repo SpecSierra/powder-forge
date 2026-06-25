@@ -137,8 +137,8 @@ void LocalSaveActivity::OnDraw()
 {
 	Graphics * g = GetGraphics();
 	g->BlendRGBAImage(saveToDiskImage->data(), RectSized(Vec2(0, 0), saveToDiskImage->Size()));
-	g->DrawFilledRect(RectSized(Position, Size).Inset(-1), 0x000000_rgb);
-	g->DrawRect(RectSized(Position, Size), 0xFFFFFF_rgb);
+	g->DrawFilledRect(RectSized(Position, Size).Inset(-1), 0x1E1E2E_rgb);
+	g->DrawRect(RectSized(Position, Size), 0x45475A_rgb);
 
 	if (thumbnail)
 	{

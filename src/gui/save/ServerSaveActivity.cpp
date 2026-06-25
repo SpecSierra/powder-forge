@@ -396,8 +396,8 @@ void ServerSaveActivity::OnDraw()
 {
 	Graphics * g = GetGraphics();
 	g->BlendRGBAImage(saveToServerImage->data(), RectSized(Vec2(-10, 0), saveToServerImage->Size()));
-	g->DrawFilledRect(RectSized(Position, Size).Inset(-1), 0x000000_rgb);
-	g->DrawRect(RectSized(Position, Size), 0xFFFFFF_rgb);
+	g->DrawFilledRect(RectSized(Position, Size).Inset(-1), 0x1E1E2E_rgb);
+	g->DrawRect(RectSized(Position, Size), 0x45475A_rgb);
 
 	if (Size.X > 220)
 		g->DrawLine(Position + Vec2(Size.X / 2 - 1, 0), Position + Vec2(Size.X / 2 - 1, Size.Y - 1), 0xFFFFFF_rgb);

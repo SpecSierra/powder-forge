@@ -11,7 +11,7 @@ using namespace ui;
 
 Label::Label(Point position, Point size, String labelText):
 	Component(position, size),
-	textColour(255, 255, 255),
+	textColour(186, 194, 222),
 	selectionIndexL(textWrapper.IndexBegin()),
 	selectionIndexH(textWrapper.IndexBegin()),
 	multiline(false),
