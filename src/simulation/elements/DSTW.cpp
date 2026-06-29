@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_DSTW()
 {
 	Identifier = "DEFAULT_PT_DSTW";
-	Name = "DSTW";
+	Name = "Dist. Water";
 	Colour = 0x1020C0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_LIQUID;

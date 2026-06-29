@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_FRAY()
 {
 	Identifier = "DEFAULT_PT_FRAY";
-	Name = "FRAY";
+	Name = "Force Ray";
 	Colour = 0x00BBFF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_FORCE;

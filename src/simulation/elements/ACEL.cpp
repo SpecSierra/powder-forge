@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_ACEL()
 {
 	Identifier = "DEFAULT_PT_ACEL";
-	Name = "ACEL";
+	Name = "Accelerator";
 	Colour = 0x0099CC_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_FORCE;

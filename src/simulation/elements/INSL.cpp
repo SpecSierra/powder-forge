@@ -3,7 +3,7 @@
 void Element::Element_INSL()
 {
 	Identifier = "DEFAULT_PT_INSL";
-	Name = "INSL";
+	Name = "Insulator";
 	Colour = 0x9EA3B6_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

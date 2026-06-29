@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_LSNS()
 {
 	Identifier = "DEFAULT_PT_LSNS";
-	Name = "LSNS";
+	Name = "Life Sensor";
 	Colour = 0x336699_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SENSOR;

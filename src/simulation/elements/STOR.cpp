@@ -8,7 +8,7 @@ static bool ctypeDraw(CTYPEDRAW_FUNC_ARGS);
 void Element::Element_STOR()
 {
 	Identifier = "DEFAULT_PT_STOR";
-	Name = "STOR";
+	Name = "Storage";
 	Colour = 0x50DFDF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWERED;

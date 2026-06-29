@@ -6,7 +6,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_QRTZ()
 {
 	Identifier = "DEFAULT_PT_QRTZ";
-	Name = "QRTZ";
+	Name = "Quartz";
 	Colour = 0xAADDDD_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

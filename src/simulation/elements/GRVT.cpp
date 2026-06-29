@@ -7,7 +7,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_GRVT()
 {
 	Identifier = "DEFAULT_PT_GRVT";
-	Name = "GRVT";
+	Name = "Graviton";
 	Colour = 0x00EE76_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_NUCLEAR;

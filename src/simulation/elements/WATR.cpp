@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_WATR()
 {
 	Identifier = "DEFAULT_PT_WATR";
-	Name = "WATR";
+	Name = "Water";
 	Colour = 0x2030D0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_LIQUID;

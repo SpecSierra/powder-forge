@@ -196,10 +196,9 @@ void RenderView::OnDraw()
 	ren->ApplySettings(*rendererSettings);
 	view->RenderSimulation(*sim, true);
 	view->AfterSimDraw(*sim);
-	for (auto y = 0; y < YRES; ++y)
 	{
 		auto &video = ren->GetVideo();
-		std::copy_n(video.data() + video.Size().X * y, video.Size().X, g->Data() + g->Size().X * y);
+		g->BlendImage(video.data(), 0xFF, RectSized(Vec2<int>{ 0, 0 }, video.Size()));
 	}
 	g->DrawLine({ 0, YRES }, { XRES-1, YRES }, 0xC8C8C8_rgb);
 	g->DrawLine({ line1, YRES }, { line1, WINDOWH }, 0xC8C8C8_rgb);

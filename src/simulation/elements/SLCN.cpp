@@ -7,7 +7,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_SLCN()
 {
 	Identifier = "DEFAULT_PT_SLCN";
-	Name = "SLCN";
+	Name = "Silicon Powder";
 	Colour = 0xBCCDDF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

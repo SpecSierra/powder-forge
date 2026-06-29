@@ -4,7 +4,7 @@
 void Element::Element_BIZRS()
 {
 	Identifier = "DEFAULT_PT_BIZRS";
-	Name = "BIZS";
+	Name = "Bizarre Solid";
 	Colour = 0x00E455_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_SOLIDS;

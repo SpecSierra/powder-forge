@@ -9,7 +9,7 @@ static void pushParticle(Simulation * sim, int i, int count, int original);
 void Element::Element_PIPE()
 {
 	Identifier = "DEFAULT_PT_PIPE";
-	Name = "PIPE";
+	Name = "Pipe";
 	Colour = 0x444444_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_FORCE;

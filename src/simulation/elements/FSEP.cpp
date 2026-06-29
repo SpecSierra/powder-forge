@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_FSEP()
 {
 	Identifier = "DEFAULT_PT_FSEP";
-	Name = "FSEP";
+	Name = "Fuse Powder";
 	Colour = 0x63AD5F_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

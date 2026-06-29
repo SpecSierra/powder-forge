@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_WTRV()
 {
 	Identifier = "DEFAULT_PT_WTRV";
-	Name = "WTRV";
+	Name = "Steam";
 	Colour = 0xA0A0FF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_GAS;

@@ -4,7 +4,7 @@
 void Element::Element_BCOL()
 {
 	Identifier = "DEFAULT_PT_BCOL";
-	Name = "BCOL";
+	Name = "Broken Coal";
 	Colour = 0x333333_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

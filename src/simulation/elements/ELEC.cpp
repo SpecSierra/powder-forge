@@ -7,7 +7,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_ELEC()
 {
 	Identifier = "DEFAULT_PT_ELEC";
-	Name = "ELEC";
+	Name = "Electron";
 	Colour = 0xDFEFFF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_NUCLEAR;

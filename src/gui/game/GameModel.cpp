@@ -58,7 +58,7 @@ GameModel::GameModel(GameView *newView):
 	activeColourPreset(0),
 	colourSelector(false),
 	colour(255, 0, 0, 255),
-	edgeMode(EDGE_VOID),
+	edgeMode(EDGE_SOLID),
 	ambientAirTemp(R_TEMP + 273.15f),
 	edgePressure(0),
 	edgeVelocityX(0),
@@ -115,7 +115,7 @@ GameModel::GameModel(GameView *newView):
 	threadedRendering = prefs.Get("Renderer.SeparateThread", true);
 
 	//Load config into simulation
-	edgeMode = prefs.Get("Simulation.EdgeMode", NUM_EDGEMODES, EDGE_VOID);
+	edgeMode = prefs.Get("Simulation.EdgeMode", NUM_EDGEMODES, EDGE_SOLID);
 	sim->SetEdgeMode(edgeMode);
 	ambientAirTemp = float(R_TEMP) + 273.15f;
 	{
@@ -208,7 +208,7 @@ GameModel::GameModel(GameView *newView):
 	if (undoHistoryLimit > 200)
 		SetUndoHistoryLimit(200);
 
-	mouseClickRequired = prefs.Get("MouseClickRequired", false);
+	mouseClickRequired = prefs.Get("MouseClickRequired", true);
 	includePressure = prefs.Get("Simulation.IncludePressure", true);
 	temperatureScale = prefs.Get("Renderer.TemperatureScale", NUM_TEMPSCALES, TEMPSCALE_CELSIUS);
 
@@ -1890,7 +1890,9 @@ void GameModel::InitTools()
 	}
 	for (int i = 0; i < NGOL; ++i)
 	{
-		auto tool = std::make_unique<ElementTool>(PMAP(i, PT_LIFE), builtinGol[i].name, builtinGol[i].description, builtinGol[i].colour, "DEFAULT_PT_LIFE_" + builtinGol[i].name.ToAscii());
+		auto &gol = builtinGol[i];
+		auto golDisplayName = gol.displayName.empty() ? gol.name : gol.displayName;
+		auto tool = std::make_unique<ElementTool>(PMAP(i, PT_LIFE), golDisplayName, gol.description, gol.colour, "DEFAULT_PT_LIFE_" + gol.name.ToAscii());
 		tool->MenuSection = SC_LIFE;
 		AllocTool(std::move(tool));
 	}

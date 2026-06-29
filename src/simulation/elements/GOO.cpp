@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_GOO()
 {
 	Identifier = "DEFAULT_PT_GOO";
-	Name = "GOO";
+	Name = "Goo";
 	Colour = 0x804000_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

@@ -3,7 +3,7 @@
 void Element::Element_WHOL()
 {
 	Identifier = "DEFAULT_PT_WHOL";
-	Name = "VENT";
+	Name = "Vent";
 	Colour = 0xEFEFEF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

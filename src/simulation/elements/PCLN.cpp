@@ -7,7 +7,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_PCLN()
 {
 	Identifier = "DEFAULT_PT_PCLN";
-	Name = "PCLN";
+	Name = "Powered Clone";
 	Colour = 0x3B3B0A_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWERED;

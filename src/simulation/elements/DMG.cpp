@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_DMG()
 {
 	Identifier = "DEFAULT_PT_DMG";
-	Name = "DMG";
+	Name = "Damage";
 	Colour = 0x88FF88_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_FORCE;

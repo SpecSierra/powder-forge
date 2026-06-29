@@ -4,7 +4,7 @@
 void Element::Element_NTCT()
 {
 	Identifier = "DEFAULT_PT_NTCT";
-	Name = "NTCT";
+	Name = "NTC Thermist.";
 	Colour = 0x505040_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

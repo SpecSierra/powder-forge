@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_RPEL()
 {
 	Identifier = "DEFAULT_PT_RPEL";
-	Name = "RPEL";
+	Name = "Repeller";
 	Colour = 0x99CC00_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_FORCE;

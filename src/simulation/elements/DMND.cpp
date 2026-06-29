@@ -3,7 +3,7 @@
 void Element::Element_DMND()
 {
 	Identifier = "DEFAULT_PT_DMND";
-	Name = "DMND";
+	Name = "Diamond";
 	Colour = 0xCCFFFF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_ISOZ()
 {
 	Identifier = "DEFAULT_PT_ISOZ";
-	Name = "ISOZ";
+	Name = "Isotope Z";
 	Colour = 0xAA30D0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_NUCLEAR;

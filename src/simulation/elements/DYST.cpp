@@ -3,7 +3,7 @@
 void Element::Element_DYST()
 {
 	Identifier = "DEFAULT_PT_DYST";
-	Name = "DYST";
+	Name = "Dead Yeast";
 	Colour = 0xBBB0A0_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_POWDERS;

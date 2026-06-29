@@ -3,7 +3,7 @@
 void Element::Element_E116()
 {
 	Identifier = "DEFAULT_PT_116";
-	Name = "EQVE";
+	Name = "Eq. Vel. Test";
 	Colour = 0xFFE0A0_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_SPECIAL;

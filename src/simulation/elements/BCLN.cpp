@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_BCLN()
 {
 	Identifier = "DEFAULT_PT_BCLN";
-	Name = "BCLN";
+	Name = "Break. Clone";
 	Colour = 0xFFD040_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

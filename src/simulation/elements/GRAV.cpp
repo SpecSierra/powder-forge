@@ -7,7 +7,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_GRAV()
 {
 	Identifier = "DEFAULT_PT_GRAV";
-	Name = "GRAV";
+	Name = "Gravity Dust";
 	Colour = 0x202020_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

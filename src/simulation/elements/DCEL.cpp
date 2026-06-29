@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_DCEL()
 {
 	Identifier = "DEFAULT_PT_DCEL";
-	Name = "DCEL";
+	Name = "Decelerator";
 	Colour = 0x99CC00_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_FORCE;

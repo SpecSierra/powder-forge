@@ -6,7 +6,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_ARAY()
 {
 	Identifier = "DEFAULT_PT_ARAY";
-	Name = "ARAY";
+	Name = "A-Ray";
 	Colour = 0xFFBB00_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

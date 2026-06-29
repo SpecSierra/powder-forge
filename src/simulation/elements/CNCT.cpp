@@ -3,7 +3,7 @@
 void Element::Element_CNCT()
 {
 	Identifier = "DEFAULT_PT_CNCT";
-	Name = "CNCT";
+	Name = "Concrete";
 	Colour = 0xC0C0C0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

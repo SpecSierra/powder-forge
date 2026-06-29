@@ -7,7 +7,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_CRMC()
 {
 	Identifier = "DEFAULT_PT_CRMC";
-	Name = "CRMC";
+	Name = "Ceramic";
 	Colour = 0xD6D1D4_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

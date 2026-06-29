@@ -4,7 +4,7 @@
 void Element::Element_BIZRG()
 {
 	Identifier = "DEFAULT_PT_BIZRG";
-	Name = "BIZG";
+	Name = "Bizarre Gas";
 	Colour = 0x00FFBB_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_GAS;

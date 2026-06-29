@@ -7,7 +7,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_PTNM()
 {
 	Identifier = "DEFAULT_PT_PTNM";
-	Name = "PTNM";
+	Name = "Platinum";
 	Colour = 0xD5E0EB_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

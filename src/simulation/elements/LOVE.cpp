@@ -3,7 +3,7 @@
 void Element::Element_LOVE()
 {
 	Identifier = "DEFAULT_PT_LOVE";
-	Name = "LOVE";
+	Name = "Love";
 	Colour = 0xFF30FF_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_SPECIAL;

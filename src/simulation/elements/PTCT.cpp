@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_PTCT()
 {
 	Identifier = "DEFAULT_PT_PTCT";
-	Name = "PTCT";
+	Name = "PTC Thermist.";
 	Colour = 0x405050_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

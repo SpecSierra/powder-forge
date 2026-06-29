@@ -6,7 +6,7 @@ static int perform(SimTool *tool, Simulation * sim, Particle * cpart, int x, int
 void SimTool::Tool_VAC()
 {
 	Identifier = "DEFAULT_TOOL_VAC";
-	Name = "VAC";
+	Name = "Vacuum";
 	Colour = 0x303030_rgb;
 	Description = "Vacuum, reduces air pressure.";
 	Perform = &perform;

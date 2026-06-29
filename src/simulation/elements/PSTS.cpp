@@ -3,7 +3,7 @@
 void Element::Element_PSTS()
 {
 	Identifier = "DEFAULT_PT_PSTS";
-	Name = "PSTS";
+	Name = "Solid Paste";
 	Colour = 0x776677_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_SOLIDS;

@@ -6,7 +6,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_ROCK()
 {
 	Identifier = "DEFAULT_PT_ROCK";
-	Name = "ROCK";
+	Name = "Rock";
 	Colour = 0x727272_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

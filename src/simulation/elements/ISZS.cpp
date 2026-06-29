@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_ISZS()
 {
 	Identifier = "DEFAULT_PT_ISZS";
-	Name = "ISZS";
+	Name = "Isotope Z Solid";
 	Colour = 0x662089_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_NUCLEAR;

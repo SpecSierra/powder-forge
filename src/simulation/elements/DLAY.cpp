@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_DLAY()
 {
 	Identifier = "DEFAULT_PT_DLAY";
-	Name = "DLAY";
+	Name = "Delay";
 	Colour = 0x753590_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWERED;

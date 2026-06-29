@@ -4,9 +4,11 @@
 #include "Config.h"
 #include "gui/interface/Engine.h"
 #include "graphics/Graphics.h"
+#include "graphics/PixelScale.h"
 #include "common/platform/Platform.h"
 #include "common/clipboard/Clipboard.h"
 #include "FrameSchedule.h"
+#include <algorithm>
 #include <iostream>
 
 int desktopWidth = 1280;
@@ -14,6 +16,8 @@ int desktopHeight = 1024;
 SDL_Window *sdl_window = nullptr;
 SDL_Renderer *sdl_renderer = nullptr;
 SDL_Texture *sdl_texture = nullptr;
+static SDL_Texture *sdl_text_texture = nullptr;
+static int textTexW = 0, textTexH = 0;
 bool vsyncHint = false;
 WindowFrameOps currentFrameOps;
 bool momentumScroll = true;
@@ -33,6 +37,32 @@ static FrameSchedule drawSchedule;
 static FrameSchedule clientTickSchedule;
 static FrameSchedule fpsUpdateSchedule;
 
+// Compute the window-pixel rect into which the game texture is rendered.
+// Used for BOTH SDL_RenderCopy (rendering) and mouse coordinate mapping,
+// so they are guaranteed to use identical arithmetic.
+static SDL_Rect ComputeGameRect()
+{
+	int winW, winH;
+	SDL_GetWindowSize(sdl_window, &winW, &winH);
+	const int texW = WINDOWW * PIXEL_SCALE;
+	const int texH = WINDOWH * PIXEL_SCALE;
+	float scale = std::min((float)winW / texW, (float)winH / texH);
+	if (currentFrameOps.Normalize().forceIntegerScaling)
+		scale = std::max(1.0f, std::floor(scale));
+	int w = (int)(texW * scale);
+	int h = (int)(texH * scale);
+	return { (winW - w) / 2, (winH - h) / 2, w, h };
+}
+
+static std::pair<int,int> WindowToGame(int wx, int wy)
+{
+	SDL_Rect r = ComputeGameRect();
+	return {
+		(wx - r.x) * WINDOWW / r.w,
+		(wy - r.y) * WINDOWH / r.h,
+	};
+}
+
 void StartTextInput()
 {
 	SDL_StartTextInput();
@@ -45,24 +75,14 @@ void StopTextInput()
 
 void SetTextInputRect(int x, int y, int w, int h)
 {
-	// Why does SDL_SetTextInputRect not take logical coordinates???
+	if (!sdl_window)
+		return;
+	SDL_Rect r = ComputeGameRect();
 	SDL_Rect rect;
-#if SDL_VERSION_ATLEAST(2, 0, 18)
-	int wx, wy, wwx, why;
-	SDL_RenderLogicalToWindow(sdl_renderer, float(x), float(y), &wx, &wy);
-	SDL_RenderLogicalToWindow(sdl_renderer, float(x + w), float(y + h), &wwx, &why);
-	rect.x = wx;
-	rect.y = wy;
-	rect.w = wwx - wx;
-	rect.h = why - wy;
-#else
-	// TODO: use SDL_RenderLogicalToWindow when ubuntu deigns to update to sdl 2.0.18
-	auto scale = ui::Engine::Ref().windowFrameOps.scale;
-	rect.x = x * scale;
-	rect.y = y * scale;
-	rect.w = w * scale;
-	rect.h = h * scale;
-#endif
+	rect.x = r.x + x * r.w / WINDOWW;
+	rect.y = r.y + y * r.h / WINDOWH;
+	rect.w = w * r.w / WINDOWW;
+	rect.h = h * r.h / WINDOWH;
 	SDL_SetTextInputRect(&rect);
 }
 
@@ -97,20 +117,41 @@ static void CalculateMousePosition(int *x, int *y)
 	SDL_GetGlobalMouseState(&globalMx, &globalMy);
 	int windowX, windowY;
 	SDL_GetWindowPosition(sdl_window, &windowX, &windowY);
-
+	auto [gx, gy] = WindowToGame(globalMx - windowX, globalMy - windowY);
 	if (x)
-		*x = (globalMx - windowX) / currentFrameOps.scale;
+		*x = gx;
 	if (y)
-		*y = (globalMy - windowY) / currentFrameOps.scale;
+		*y = gy;
 }
 
-void blit(pixel *vid)
+void blit(pixel *vid, Graphics *g)
 {
-	SDL_UpdateTexture(sdl_texture, nullptr, vid, WINDOWW * sizeof (Uint32));
-	// need to clear the renderer if there are black edges (fullscreen, or resizable window)
-	if (currentFrameOps.fullscreen || currentFrameOps.resizable)
-		SDL_RenderClear(sdl_renderer);
-	SDL_RenderCopy(sdl_renderer, sdl_texture, nullptr, nullptr);
+	int winW, winH;
+	SDL_GetWindowSize(sdl_window, &winW, &winH);
+
+	SDL_UpdateTexture(sdl_texture, nullptr, vid, WINDOWW * PIXEL_SCALE * sizeof(Uint32));
+	SDL_RenderClear(sdl_renderer);
+	SDL_Rect dst = ComputeGameRect();
+	SDL_RenderCopy(sdl_renderer, sdl_texture, nullptr, &dst);
+
+	// Native-resolution text overlay: crispy text at actual window pixel size
+	if (g && g->nativeText.active && !g->nativeText.pixels.empty())
+	{
+		auto &nt = g->nativeText;
+		if (!sdl_text_texture || textTexW != winW || textTexH != winH)
+		{
+			if (sdl_text_texture)
+				SDL_DestroyTexture(sdl_text_texture);
+			sdl_text_texture = SDL_CreateTexture(sdl_renderer,
+			    SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, winW, winH);
+			SDL_SetTextureBlendMode(sdl_text_texture, SDL_BLENDMODE_BLEND);
+			textTexW = winW;
+			textTexH = winH;
+		}
+		SDL_UpdateTexture(sdl_text_texture, nullptr, nt.pixels.data(), winW * sizeof(Uint32));
+		SDL_RenderCopy(sdl_renderer, sdl_text_texture, nullptr, nullptr);
+	}
+
 	SDL_RenderPresent(sdl_renderer);
 }
 
@@ -273,8 +314,8 @@ void SDLSetScreen()
 			}
 			Platform::Exit(-1);
 		}
-		SDL_RenderSetLogicalSize(sdl_renderer, WINDOWW, WINDOWH);
-		sdl_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, WINDOWW, WINDOWH);
+		sdl_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+		                                WINDOWW * PIXEL_SCALE, WINDOWH * PIXEL_SCALE);
 		if (!sdl_texture)
 		{
 			fprintf(stderr, "SDL_CreateTexture failed: %s\n", SDL_GetError());
@@ -283,7 +324,6 @@ void SDLSetScreen()
 		SDL_RaiseWindow(sdl_window);
 		Clipboard::RecreateWindow();
 	}
-	SDL_RenderSetIntegerScale(sdl_renderer, newFrameOpsNorm.forceIntegerScaling ? SDL_TRUE : SDL_FALSE);
 	if (!(newFrameOpsNorm.resizable && SDL_GetWindowFlags(sdl_window) & SDL_WINDOW_MAXIMIZED))
 	{
 		SDL_SetWindowSize(sdl_window, size.X, size.Y);
@@ -354,12 +394,14 @@ static void EventProcess(const SDL_Event &event)
 		break;
 	}
 	case SDL_MOUSEMOTION:
-		mousex = event.motion.x;
-		mousey = event.motion.y;
+	{
+		auto [gx, gy] = WindowToGame(event.motion.x, event.motion.y);
+		mousex = gx;
+		mousey = gy;
 		engine.onMouseMove(mousex, mousey);
-
 		hasMouseMoved = true;
 		break;
+	}
 	case SDL_DROPFILE:
 		engine.onFileDrop(event.drop.file);
 		SDL_free(event.drop.file);
@@ -368,8 +410,9 @@ static void EventProcess(const SDL_Event &event)
 		// if mouse hasn't moved yet, sdl will send 0,0. We don't want that
 		if (hasMouseMoved)
 		{
-			mousex = event.button.x;
-			mousey = event.button.y;
+			auto [gx, gy] = WindowToGame(event.button.x, event.button.y);
+			mousex = gx;
+			mousey = gy;
 		}
 		mouseButton = event.button.button;
 		engine.onMouseDown(mousex, mousey, mouseButton);
@@ -384,8 +427,9 @@ static void EventProcess(const SDL_Event &event)
 		// if mouse hasn't moved yet, sdl will send 0,0. We don't want that
 		if (hasMouseMoved)
 		{
-			mousex = event.button.x;
-			mousey = event.button.y;
+			auto [gx, gy] = WindowToGame(event.button.x, event.button.y);
+			mousex = gx;
+			mousey = gy;
 		}
 		mouseButton = event.button.button;
 		engine.onMouseUp(mousex, mousey, mouseButton);
@@ -484,10 +528,30 @@ std::optional<uint64_t> EngineProcess()
 	}
 	if (doDraw)
 	{
+		// Set up native text overlay before drawing so BlendChar writes to it
+		if (sdl_window && engine.g)
+		{
+			int winW, winH;
+			SDL_GetWindowSize(sdl_window, &winW, &winH);
+			SDL_Rect gr = ComputeGameRect();
+			auto &nt = engine.g->nativeText;
+			nt.scaleX = (float)gr.w / WINDOWW;
+			nt.scaleY = (float)gr.h / WINDOWH;
+			nt.baseX  = gr.x;
+			nt.baseY  = gr.y;
+			nt.w      = winW;
+			nt.h      = winH;
+			nt.active = true;
+			size_t needed = (size_t)winW * winH;
+			if (nt.pixels.size() != needed)
+				nt.pixels.resize(needed);
+			nt.Clear();
+		}
+
 		engine.Draw();
 		drawSchedule.SetNow(nowNs);
 		SDLSetScreen();
-		blit(engine.g->Data());
+		blit(engine.g->Data(), engine.g);
 	}
 	if (effectiveDrawLimit)
 	{

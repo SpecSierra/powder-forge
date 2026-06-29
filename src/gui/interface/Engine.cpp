@@ -89,8 +89,9 @@ void Engine::ShowWindow(Window * window)
 	}*/
 	if(state_)
 	{
-		frozenGraphics.emplace(FrozenGraphics{0, std::make_unique<pixel []>(g->Size().X * g->Size().Y)});
-		std::copy_n(g->Data(), g->Size().X * g->Size().Y, frozenGraphics.top().screen.get());
+		auto nativeCount = g->NativeSize().X * g->NativeSize().Y;
+		frozenGraphics.emplace(FrozenGraphics{0, std::make_unique<pixel []>(nativeCount)});
+		std::copy_n(g->Data(), nativeCount, frozenGraphics.top().screen.get());
 
 		windows.push_back(state_);
 		mousePositions.push(ui::Point(mousex_, mousey_));
@@ -206,7 +207,8 @@ void Engine::Draw()
 	if (!frozenGraphics.empty() && !(state_ && RectSized(state_->Position, state_->Size) == g->Size().OriginRect()))
 	{
 		auto &frozen = frozenGraphics.top();
-		std::copy_n(frozen.screen.get(), g->Size().X * g->Size().Y, g->Data());
+		auto nativeCount = g->NativeSize().X * g->NativeSize().Y;
+		std::copy_n(frozen.screen.get(), nativeCount, g->Data());
 		if (frozen.fadeTicks <= maxFadeTicks)
 		{
 			// from 0x00 at 0 to about 0x54 at 20
@@ -215,7 +217,7 @@ void Engine::Draw()
 		}
 		// If this is the last frame in the fade, save what the faded image looks like
 		if (frozen.fadeTicks == maxFadeTicks)
-			std::copy_n(g->Data(), g->Size().X * g->Size().Y, frozen.screen.get());
+			std::copy_n(g->Data(), g->NativeSize().X * g->NativeSize().Y, frozen.screen.get());
 		if (frozen.fadeTicks <= maxFadeTicks)
 			frozen.fadeTicks++;
 	}

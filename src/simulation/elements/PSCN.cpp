@@ -3,7 +3,7 @@
 void Element::Element_PSCN()
 {
 	Identifier = "DEFAULT_PT_PSCN";
-	Name = "PSCN";
+	Name = "P-Silicon";
 	Colour = 0x805050_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

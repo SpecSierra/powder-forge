@@ -7,7 +7,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_GOLD()
 {
 	Identifier = "DEFAULT_PT_GOLD";
-	Name = "GOLD";
+	Name = "Gold";
 	Colour = 0xDCAD2C_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

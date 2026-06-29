@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_LITH()
 {
 	Identifier = "DEFAULT_PT_LITH";
-	Name = "LITH";
+	Name = "Lithium";
 	Colour = 0xB6AABF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

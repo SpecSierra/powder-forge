@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_CLNE()
 {
 	Identifier = "DEFAULT_PT_CLNE";
-	Name = "CLNE";
+	Name = "Clone";
 	Colour = 0xFFD010_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

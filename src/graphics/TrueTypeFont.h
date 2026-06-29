@@ -13,6 +13,9 @@ public:
 
 	bool IsLoaded() const { return loaded; }
 
+	// Target render height in logical pixels.
+	static constexpr float TTF_PIXEL_HEIGHT = 10.0f;
+
 	struct Glyph
 	{
 		std::vector<uint8_t> bitmap; // 8-bit alpha, row-major
@@ -22,7 +25,12 @@ public:
 	};
 
 	// Returns nullptr if the codepoint is not in the font or font failed to load.
+	// Glyphs are rendered at TTF_PIXEL_HEIGHT * PIXEL_SCALE native pixels.
 	const Glyph *GetGlyph(int codepoint);
+
+	// Get a glyph rendered at an arbitrary native pixel height.
+	// Used by the native-resolution text overlay for crispy display-size rendering.
+	const Glyph *GetGlyphAt(int codepoint, float pixelHeight);
 
 	// Baseline Y offset relative to the position passed to BlendChar.
 	// Chosen so glyphs fit within the legacy [pos.Y-2, pos.Y+FONT_H-2] render area.
@@ -31,6 +39,7 @@ public:
 private:
 	TrueTypeFont();
 	const Glyph *RasteriseGlyph(int codepoint);
+	const Glyph *RasteriseGlyphAt(int codepoint, float pixelHeight);
 
 	bool loaded = false;
 	std::vector<uint8_t> fontBuffer;
@@ -38,4 +47,6 @@ private:
 	float scale = 1.0f;
 	int baseline = 8;
 	std::unordered_map<int, Glyph> cache;
+	// Scaled cache keyed by (codepoint << 16) | roundedPixelHeight
+	std::unordered_map<uint64_t, Glyph> scaledCache;
 };

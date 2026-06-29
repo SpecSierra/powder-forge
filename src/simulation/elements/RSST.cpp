@@ -5,7 +5,7 @@ int update(UPDATE_FUNC_ARGS);
 void Element::Element_RSST()
 {
 	Identifier = "DEFAULT_PT_RSST";
-	Name = "RSST";
+	Name = "Resist";
 	Colour = 0xF95B49_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_LIQUID;

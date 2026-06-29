@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_IGNT()
 {
 	Identifier = "DEFAULT_PT_IGNT";
-	Name = "IGNC";
+	Name = "Igniter";
 	Colour = 0xC0B050_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

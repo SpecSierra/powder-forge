@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_GPMP()
 {
 	Identifier = "DEFAULT_PT_GPMP";
-	Name = "GPMP";
+	Name = "Gravity Pump";
 	Colour = 0x0A3B3B_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWERED;

@@ -1,5 +1,6 @@
 #include "ToolButton.h"
 #include "graphics/Graphics.h"
+#include "graphics/Pixel.h"
 #include "graphics/VideoBuffer.h"
 #include "Favorite.h"
 #include <SDL.h>
@@ -14,7 +15,7 @@ ToolButton::ToolButton(ui::Point position, ui::Point size, String text, ByteStri
 	Appearance.BorderFavorite = ui::Colour(255, 255, 0);
 
 	//don't use "..." on elements that have long names
-	buttonDisplayText = ButtonText.Substr(0, 7);
+	buttonDisplayText = ButtonText;
 	Component::TextPosition(buttonDisplayText);
 }
 

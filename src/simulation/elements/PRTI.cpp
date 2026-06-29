@@ -10,7 +10,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_PRTI()
 {
 	Identifier = "DEFAULT_PT_PRTI";
-	Name = "PRTI";
+	Name = "Portal In";
 	Colour = 0xEB5917_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

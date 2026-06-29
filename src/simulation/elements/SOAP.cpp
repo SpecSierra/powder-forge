@@ -16,7 +16,7 @@ void Element_SOAP_neighourLoop(float &dx, float &dy)
 void Element::Element_SOAP()
 {
 	Identifier = "DEFAULT_PT_SOAP";
-	Name = "SOAP";
+	Name = "Soap";
 	Colour = 0xF5F5DC_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_LIQUID;

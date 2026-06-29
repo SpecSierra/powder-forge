@@ -1,0 +1,733 @@
+#!/usr/bin/env python3
+import http.server
+import os
+import ssl
+import urllib.error
+import urllib.request
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+# Hosts the proxy will forward to (game talks to both)
+PROXY_HOSTS = {'powdertoy.co.uk', 'static.powdertoy.co.uk'}
+
+INDEX_HTML = """\
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Powder Forge</title>
+  <meta name="description" content="Powder Forge — a modern physics sandbox">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Title bar ── */
+    header {
+      width: 100%;
+      background: #181825;
+      border-bottom: 1px solid #313244;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 20px;
+      height: 48px;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+    }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      height: 32px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #a6adc8;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    nav a:hover {
+      background: #313244;
+      color: #cdd6f4;
+    }
+
+    nav a svg {
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+
+    nav a:hover svg {
+      opacity: 1;
+    }
+
+    /* ── About modal ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #1e1e2e;
+      border: 1px solid #313244;
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 460px;
+      width: calc(100% - 48px);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: #6c7086;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      line-height: 0;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .modal-close:hover {
+      color: #cdd6f4;
+      background: #313244;
+    }
+
+    .modal-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .modal-logo svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #cba6f7, #89b4fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .modal-subtitle {
+      font-size: 0.75rem;
+      color: #6c7086;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .modal-body {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: #a6adc8;
+    }
+
+    .modal-body p + p {
+      margin-top: 12px;
+    }
+
+    .modal-body a {
+      color: #89b4fa;
+      text-decoration: none;
+    }
+
+    .modal-body a:hover {
+      text-decoration: underline;
+    }
+
+    .modal-divider {
+      border: none;
+      border-top: 1px solid #313244;
+      margin: 20px 0;
+    }
+
+    .modal-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #313244;
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      color: #cdd6f4;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    .logo-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      background: linear-gradient(90deg, #cba6f7, #89b4fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-tag {
+      font-size: 0.7rem;
+      color: #6c7086;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+
+    /* ── Game area ── */
+    main {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      overflow: hidden;
+    }
+
+    .game-center {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ── Side panels ── */
+    .sidebar {
+      width: 160px;
+      flex-shrink: 0;
+      overflow: hidden;
+      border-color: #313244;
+    }
+
+    .sidebar-left  { border-right: 1px solid #313244; }
+    .sidebar-right { border-left:  1px solid #313244; }
+
+    .pillar-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+    }
+
+    @media (max-width: 860px) {
+      .sidebar { display: none; }
+    }
+
+    /* ── Footer ── */
+    footer {
+      flex-shrink: 0;
+      width: 100%;
+      background: #181825;
+      border-top: 1px solid #313244;
+      padding: 6px 20px;
+      font-size: 0.7rem;
+      color: #6c7086;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    footer a {
+      color: #89b4fa;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    #status {
+      font-size: 0.95rem;
+      color: #6c7086;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #313244;
+      border-top-color: #cba6f7;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    canvas {
+      display: none;
+      image-rendering: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="28" height="28" rx="6" fill="#181825"/>
+        <!-- anvil silhouette -->
+        <rect x="5" y="16" width="18" height="4" rx="1" fill="#cba6f7"/>
+        <rect x="8" y="12" width="12" height="5" rx="1" fill="#89b4fa"/>
+        <!-- spark particles -->
+        <circle cx="20" cy="9"  r="1.5" fill="#f9e2af" opacity="0.9"/>
+        <circle cx="23" cy="7"  r="1"   fill="#fab387" opacity="0.7"/>
+        <circle cx="18" cy="7"  r="1"   fill="#cba6f7" opacity="0.6"/>
+        <circle cx="22" cy="11" r="0.8" fill="#89dceb" opacity="0.5"/>
+      </svg>
+      <div>
+        <div class="logo-name">Powder Forge</div>
+        <div class="logo-tag">Physics Sandbox</div>
+      </div>
+    </div>
+    <nav>
+      <a href="https://powdertoy.co.uk/Wiki/W/Main_Page.html" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        Wiki
+      </a>
+      <a href="#" id="about-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        About
+      </a>
+    </nav>
+  </header>
+
+  <div class="modal-backdrop" id="about-modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="About Powder Forge">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="modal-logo">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="28" height="28" rx="6" fill="#181825"/>
+          <rect x="5" y="16" width="18" height="4" rx="1" fill="#cba6f7"/>
+          <rect x="8" y="12" width="12" height="5" rx="1" fill="#89b4fa"/>
+          <circle cx="20" cy="9"  r="1.5" fill="#f9e2af" opacity="0.9"/>
+          <circle cx="23" cy="7"  r="1"   fill="#fab387" opacity="0.7"/>
+          <circle cx="18" cy="7"  r="1"   fill="#cba6f7" opacity="0.6"/>
+          <circle cx="22" cy="11" r="0.8" fill="#89dceb" opacity="0.5"/>
+        </svg>
+        <div>
+          <div class="modal-title">Powder Forge</div>
+          <div class="modal-subtitle">Physics Sandbox</div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p>
+          <strong style="color:#cdd6f4">Powder Forge</strong> is a modernised interface for
+          <a href="https://powdertoy.co.uk" target="_blank" rel="noopener">The Powder Toy</a>,
+          the classic open-source physics sandbox game. Everything you love about the original
+          — every element, every reaction, every saved simulation — is still here.
+        </p>
+        <p>
+          This version adds a refreshed dark UI, TrueType font rendering, and runs entirely
+          in your browser via WebAssembly. No installation required.
+        </p>
+        <p>
+          All game logic, saves, and online features belong to
+          <a href="https://powdertoy.co.uk" target="_blank" rel="noopener">powdertoy.co.uk</a>.
+          Powder Forge is an independent UI project and is not affiliated with or endorsed
+          by the original Powder Toy team.
+        </p>
+      </div>
+      <hr class="modal-divider">
+      <div class="modal-badges">
+        <span class="badge"><span class="badge-dot" style="background:#a6e3a1"></span>Open source</span>
+        <span class="badge"><span class="badge-dot" style="background:#cba6f7"></span>GPL v3.0</span>
+        <span class="badge"><span class="badge-dot" style="background:#89b4fa"></span>WebAssembly</span>
+        <span class="badge"><span class="badge-dot" style="background:#f9e2af"></span>Based on TPT</span>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <aside class="sidebar sidebar-left">
+      <canvas id="pillar-left" class="pillar-canvas"></canvas>
+    </aside>
+
+    <div class="game-center">
+      <p id="status"><span class="spinner"></span>Loading Powder Forge…</p>
+      <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+    </div>
+
+    <aside class="sidebar sidebar-right">
+      <canvas id="pillar-right" class="pillar-canvas"></canvas>
+    </aside>
+  </main>
+
+  <footer>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6c7086" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    Powder Forge is free software released under the
+    <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GNU General Public License v3.0</a>.
+    Based on <a href="https://github.com/The-Powder-Toy/The-Powder-Toy" target="_blank" rel="noopener">The Powder Toy</a>
+    &copy; Simon Robertshaw et al.
+    Source code available on <a href="https://github.com/SpecSierra/powder-forge" target="_blank" rel="noopener">GitHub</a>.
+  </footer>
+
+  <script>
+    // ── Greek column pixel art ────────────────────────────────────────────────
+    (function() {
+      var SC = 3; // CSS px per logical pixel
+
+      // Night-time stone palette (moonlit, ~35% brightness)
+      var L = '#5e5a52'; // moonlit ridge catch (cool-warm)
+      var M = '#38301e'; // dark stone face
+      var D = '#201810'; // deep shadow
+      var G = '#0e0a06'; // groove (near-black)
+      var E = '#4a3e2c'; // entablature face
+      var BG= '#1e1e2e'; // dark background
+
+      function drawPillar(canvas, mirrorX) {
+        var ctx = canvas.getContext('2d');
+        var W = canvas.width, H = canvas.height;
+        if (!W || !H) return;
+
+        ctx.fillStyle = BG;
+        ctx.fillRect(0, 0, W, H);
+
+        var cx = W >> 1;
+
+        // Section heights
+        var eH = Math.max(14, H * 0.13 | 0); // entablature
+        var kH = Math.max(9,  H * 0.09 | 0); // capital
+        var bH = Math.max(9,  H * 0.10 | 0); // base
+        var sH = H - eH - kH - bH;           // shaft
+
+        // 7 flutes × 4px each = 28px shaft
+        var NF = 7, FW = 4, asW = NF * FW, asX = cx - (asW >> 1);
+        var sW = asW, sX = asX;
+
+        function r(x, y, w, h, c) {
+          x = x < 0 ? 0 : x;
+          w = x + w > W ? W - x : w;
+          if (w > 0 && h > 0) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
+        }
+
+        // ── Entablature ──────────────────────────────────────────────────────
+        r(0, 0, W, 1, L);                        // cornice highlight
+        r(0, 1, W, eH - 4, E);                  // main body
+
+        // Three triglyphs (pairs of dark bars)
+        var tgY = 2, tgH = eH - 6;
+        [W*0.16|0, W*0.43|0, W*0.70|0].forEach(function(tx) {
+          r(tx,   tgY, 2, tgH, G);
+          r(tx+4, tgY, 2, tgH, G);
+        });
+
+        r(0, eH - 3, W, 1, D);                  // regula
+        r(0, eH - 2, W, 2, M);                  // taenia
+
+        // ── Capital ──────────────────────────────────────────────────────────
+        var ky = eH;
+        var aW = Math.min(W - 2, sW + 10);
+        r(cx-(aW>>1), ky,   aW, 1, L);          // abacus highlight
+        r(cx-(aW>>1), ky+1, aW, 2, E);          // abacus body
+        r(cx-(aW>>1), ky+3, aW, 1, D);          // abacus base
+
+        // Echinus (3-row taper)
+        [sW+7, sW+4, sW+1].forEach(function(ew, ei) {
+          r(cx-(ew>>1), ky+4+ei, ew, 1, ei < 2 ? M : D);
+        });
+
+        // Necking
+        r(sX, ky+7, sW, kH-7, D);
+        r(sX, ky+7, sW, 1, M);
+
+        // ── Shaft with fluting ────────────────────────────────────────────────
+        var sy = eH + kH;
+        // Each 4-px flute: [ridge-highlight, lit-face, shadow-face, deep-groove]
+        var FLUTE = mirrorX ? [G, D, M, L] : [L, M, D, G];
+
+        for (var fy = 0; fy < sH; fy++) {
+          for (var f = 0; f < NF; f++) {
+            for (var fp = 0; fp < FW; fp++) {
+              ctx.fillStyle = FLUTE[fp];
+              ctx.fillRect(asX + f*FW + fp, sy + fy, 1, 1);
+            }
+          }
+          ctx.fillStyle = G;
+          ctx.fillRect(asX - 1, sy + fy, 1, 1); // left edge
+          ctx.fillRect(asX + asW, sy + fy, 1, 1); // right edge
+        }
+
+        // ── Base ─────────────────────────────────────────────────────────────
+        var by = H - bH;
+        r(sX-1, by,   sW+2, 1, L);              // torus highlight
+        r(sX-1, by+1, sW+2, 1, M);              // torus body
+
+        var step = Math.max(2, (bH - 2) / 3 | 0);
+        [[sW+5, M], [sW+9, E], [W, D]].forEach(function(s, bi) {
+          var bw = s[0], bc = s[1];
+          r(cx-(bw>>1), by+2+bi*step, bw, step, bc);
+          r(cx-(bw>>1), by+2+bi*step, bw,    1, L); // step highlight
+        });
+      }
+
+      function setup(id, mirrorX) {
+        var c = document.getElementById(id);
+        if (!c) return;
+        function draw() {
+          var p = c.parentElement;
+          c.width  = Math.max(1, p.clientWidth  / SC | 0);
+          c.height = Math.max(1, p.clientHeight / SC | 0);
+          drawPillar(c, mirrorX);
+        }
+        draw();
+        window.addEventListener('resize', draw);
+      }
+
+      setup('pillar-left',  false); // highlight on left ridge of each flute
+      setup('pillar-right', true);  // mirrored: highlight on right ridge
+
+    })();
+
+    // ── About modal ──
+    (function() {
+      var btn      = document.getElementById('about-btn');
+      var modal    = document.getElementById('about-modal');
+      var closeBtn = document.getElementById('modal-close');
+
+      function open()  { modal.classList.add('open');    btn.blur(); }
+      function close() { modal.classList.remove('open'); }
+
+      btn.addEventListener('click', function(e) { e.preventDefault(); open(); });
+      closeBtn.addEventListener('click', close);
+      modal.addEventListener('click', function(e) { if (e.target === modal) close(); });
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
+    })();
+
+    // ── CORS proxy: silently reroute powdertoy.co.uk calls through /proxy/ ──
+    (function() {
+      var _fetch = window.fetch.bind(window);
+      window.fetch = function(url, opts) {
+        if (typeof url === 'string' && /\\/\\/(([\\w-]+\\.)*powdertoy\\.co\\.uk)/.test(url)) {
+          url = '/proxy/' + url.replace(/^https?:\\/\\//, '');
+        }
+        return _fetch(url, opts);
+      };
+    })();
+
+    (() => {
+      var promise;
+      window.create_powder_loader = () => {
+        if (promise === undefined) {
+          promise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.onload = () => resolve(window.create_powder);
+            script.onerror = reject;
+            document.head.appendChild(script);
+            script.src = 'powder.js';
+          });
+        }
+        return promise;
+      };
+    })();
+    (() => {
+      var canvas = document.getElementById('canvas');
+      var status = document.getElementById('status');
+      var center = document.querySelector('.game-center');
+
+      function fitCanvas() {
+        if (canvas.style.display === 'none') return;
+        var aw = center.clientWidth;
+        var ah = center.clientHeight;
+        var cw = canvas.width;
+        var ch = canvas.height;
+        if (!cw || !ch) return;
+        var scale = Math.min(aw / cw, ah / ch);
+        canvas.style.width  = Math.floor(cw * scale) + 'px';
+        canvas.style.height = Math.floor(ch * scale) + 'px';
+      }
+
+      window.mark_presentable = function() {
+        canvas.style.display = 'block';
+        status.style.display = 'none';
+        fitCanvas();
+      };
+      window.addEventListener('resize', fitCanvas);
+
+      window.onerror = () => {
+        status.innerHTML = 'Error loading Powder Forge — see browser console (F12)';
+      };
+      create_powder_loader().then(create_powder => create_powder({
+        canvas: (() => {
+          canvas.addEventListener('webglcontextlost', e => {
+            alert('WebGL context lost. Reload the page.'); e.preventDefault();
+          }, false);
+          return canvas;
+        })(),
+        print: console.log,
+        printErr: console.warn,
+      }));
+    })();
+  </script>
+</body>
+</html>
+"""
+
+with open("index.html", "w") as f:
+    f.write(INDEX_HTML)
+
+# SSL context for outbound proxy requests (verify certs normally)
+_ssl_ctx = ssl.create_default_context()
+
+SKIP_HEADERS = {'host', 'connection', 'transfer-encoding', 'te',
+                'trailer', 'upgrade', 'proxy-authorization', 'proxy-authenticate'}
+
+class Handler(http.server.SimpleHTTPRequestHandler):
+
+    # ── CORS proxy ────────────────────────────────────────────────────────────
+
+    def do_OPTIONS(self):
+        if self.path.startswith('/proxy/'):
+            self.send_response(204)
+            self._cors_headers()
+            self.end_headers()
+        else:
+            self.send_error(405)
+
+    def do_GET(self):
+        if self.path.startswith('/proxy/'):
+            self._proxy('GET')
+        else:
+            super().do_GET()
+
+    def do_POST(self):
+        if self.path.startswith('/proxy/'):
+            self._proxy('POST')
+        else:
+            super().do_POST()
+
+    def _proxy(self, method):
+        target = 'https://' + self.path[len('/proxy/'):]
+
+        # Verify the target is one of the expected hosts
+        from urllib.parse import urlparse
+        host = urlparse(target).hostname or ''
+        if not any(host == h or host.endswith('.' + h) for h in PROXY_HOSTS):
+            self.send_error(403, 'Proxy target not allowed')
+            return
+
+        # Read body for POST
+        length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(length) if length else None
+
+        req = urllib.request.Request(target, data=body, method=method)
+        for k, v in self.headers.items():
+            if k.lower() not in SKIP_HEADERS:
+                req.add_header(k, v)
+
+        try:
+            with urllib.request.urlopen(req, context=_ssl_ctx) as resp:
+                data = resp.read()
+                self.send_response(resp.status)
+                for k, v in resp.headers.items():
+                    if k.lower() not in SKIP_HEADERS:
+                        self.send_header(k, v)
+                self._cors_headers()
+                self.end_headers()
+                self.wfile.write(data)
+        except urllib.error.HTTPError as e:
+            data = e.read()
+            self.send_response(e.code)
+            ct = e.headers.get('Content-Type', 'application/octet-stream')
+            self.send_header('Content-Type', ct)
+            self.send_header('Content-Length', str(len(data)))
+            self._cors_headers()
+            self.end_headers()
+            self.wfile.write(data)
+        except Exception as e:
+            self.send_error(502, f'Proxy error: {e}')
+
+    def _cors_headers(self):
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', '*')
+        self.send_header('Cross-Origin-Resource-Policy', 'cross-origin')
+
+    # ── Security headers on every response ───────────────────────────────────
+
+    def end_headers(self):
+        self.send_header('Cross-Origin-Opener-Policy', 'same-origin')
+        self.send_header('Cross-Origin-Embedder-Policy', 'require-corp')
+        super().end_headers()
+
+    def log_message(self, fmt, *args):
+        pass  # suppress per-request logs
+
+print("Serving Powder Forge at http://localhost:8000")
+print("API proxy active for powdertoy.co.uk — login and saves should work.")
+print("Press Ctrl+C to stop.")
+http.server.HTTPServer(("0.0.0.0", 8000), Handler).serve_forever()

@@ -1,3 +1,12 @@
+# Powder Forge web deployment — keep these even though build*/* would exclude them
+!build-wasm/serve.py
+!build-wasm/index.html
+!build-wasm/_headers
+!build-wasm/functions/
+!build-wasm/functions/**
+# Font bundled for WASM build
+!resources/DejaVuSans.ttf
+
 # Misc extensions, system files
 *.zip
 *.txt

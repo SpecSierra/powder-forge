@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_VSNS()
 {
 	Identifier = "DEFAULT_PT_VSNS";
-	Name = "VSNS";
+	Name = "Velocity Sensor";
 	Colour = 0x7C9C00_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SENSOR;

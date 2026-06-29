@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_BOYL()
 {
 	Identifier = "DEFAULT_PT_BOYL";
-	Name = "BOYL";
+	Name = "Boyle Gas";
 	Colour = 0x0A3200_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_GAS;

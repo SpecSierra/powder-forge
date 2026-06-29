@@ -3,7 +3,7 @@
 void Element::Element_DESL()
 {
 	Identifier = "DEFAULT_PT_DESL";
-	Name = "DESL";
+	Name = "Diesel";
 	Colour = 0x440000_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_LIQUID;

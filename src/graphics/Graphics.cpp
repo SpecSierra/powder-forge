@@ -168,6 +168,8 @@ std::vector<char> VideoBuffer::ToPPM() const
 template struct RasterDrawMethods<VideoBuffer>;
 
 Graphics::Graphics()
+	: video(Vec2<int>{ WINDOWW, WINDOWH } * PIXEL_SCALE)
+	, clipRect(Vec2<int>{ WINDOWW, WINDOWH }.OriginRect())
 {}
 
 void Graphics::draw_icon(int x, int y, Icon icon, unsigned char alpha, bool invert)
@@ -230,11 +232,47 @@ void Graphics::draw_icon(int x, int y, Icon icon, unsigned char alpha, bool inve
 			BlendChar({ x, y + 1 }, 0xE004, 0xFFFFFF_rgb .WithAlpha(alpha));
 		break;
 	case IconSimulationSettings:
-		if(invert)
-			BlendChar({ x, y + 1 }, 0xE04F, 0x000000_rgb .WithAlpha(alpha));
-		else
-			BlendChar({ x, y + 1 }, 0xE04F, 0xFFFFFF_rgb .WithAlpha(alpha));
+	{
+		// 9×9 pixel-art gear centred in the 15×15 button slot.
+		// cx+2/cy+2 offsets place the 9px gear at pixel 3 of the 15px button = centred.
+		//
+		//   ...###...   row 0  top tooth (cols 3-5)
+		//   .#######.   row 1  body top
+		//   .##...##.   row 2  body sides
+		//   ###...###   row 3  L+R teeth (wide) + hollow
+		//   ##..#..##   row 4  L+R teeth (narrow) + centre dot
+		//   ###...###   row 5  L+R teeth (wide)
+		//   .##...##.   row 6  body sides
+		//   .#######.   row 7  body bottom
+		//   ...###...   row 8  bottom tooth
+		auto col = invert ? 0x1E1E2E_rgb .WithAlpha(alpha) : 0x89B4FA_rgb .WithAlpha(alpha);
+		int cx = x + 2, cy = y + 2;
+		// row 0 – top tooth
+		BlendFilledRect(RectSized(Vec2{ cx+3, cy+0 }, Vec2{ 3, 1 }), col);
+		// row 1 – body top
+		BlendFilledRect(RectSized(Vec2{ cx+1, cy+1 }, Vec2{ 7, 1 }), col);
+		// row 2 – body sides
+		BlendFilledRect(RectSized(Vec2{ cx+1, cy+2 }, Vec2{ 2, 1 }), col);
+		BlendFilledRect(RectSized(Vec2{ cx+6, cy+2 }, Vec2{ 2, 1 }), col);
+		// row 3 – L+R teeth (3 px wide each)
+		BlendFilledRect(RectSized(Vec2{ cx+0, cy+3 }, Vec2{ 3, 1 }), col);
+		BlendFilledRect(RectSized(Vec2{ cx+6, cy+3 }, Vec2{ 3, 1 }), col);
+		// row 4 – L+R teeth (2 px wide) + centre dot
+		BlendFilledRect(RectSized(Vec2{ cx+0, cy+4 }, Vec2{ 2, 1 }), col);
+		BlendPixel(Vec2{ cx+4, cy+4 }, col);
+		BlendFilledRect(RectSized(Vec2{ cx+7, cy+4 }, Vec2{ 2, 1 }), col);
+		// row 5 – mirror of row 3
+		BlendFilledRect(RectSized(Vec2{ cx+0, cy+5 }, Vec2{ 3, 1 }), col);
+		BlendFilledRect(RectSized(Vec2{ cx+6, cy+5 }, Vec2{ 3, 1 }), col);
+		// row 6 – mirror of row 2
+		BlendFilledRect(RectSized(Vec2{ cx+1, cy+6 }, Vec2{ 2, 1 }), col);
+		BlendFilledRect(RectSized(Vec2{ cx+6, cy+6 }, Vec2{ 2, 1 }), col);
+		// row 7 – body bottom
+		BlendFilledRect(RectSized(Vec2{ cx+1, cy+7 }, Vec2{ 7, 1 }), col);
+		// row 8 – bottom tooth
+		BlendFilledRect(RectSized(Vec2{ cx+3, cy+8 }, Vec2{ 3, 1 }), col);
 		break;
+	}
 	case IconRenderSettings:
 		if(invert)
 		{
@@ -460,7 +498,7 @@ VideoBuffer Graphics::DumpFrame()
 void Graphics::SwapClipRect(Rect<int> &rect)
 {
 	std::swap(clipRect, rect);
-	clipRect &= video.Size().OriginRect();
+	clipRect &= Vec2<int>{ WINDOWW, WINDOWH }.OriginRect();
 }
 
 void Graphics::RenderZoom()
@@ -477,10 +515,17 @@ void Graphics::RenderZoom()
 		for (j=0; j<zoomScopeSize; j++)
 			for (i=0; i<zoomScopeSize; i++)
 			{
-				pix = video[{ i + zoomScopePosition.X, j + zoomScopePosition.Y }];
+				// Read from the top-left native pixel of each logical scope pixel.
+				pix = video[Vec2<int>{ i + zoomScopePosition.X, j + zoomScopePosition.Y } * PIXEL_SCALE];
 				for (y=0; y<ZFACTOR-1; y++)
 					for (x=0; x<ZFACTOR-1; x++)
-						video[{ i * ZFACTOR + x + zoomWindowPosition.X, j * ZFACTOR + y + zoomWindowPosition.Y }] = pix;
+					{
+						// Fill a PIXEL_SCALE×PIXEL_SCALE native block per zoom pixel.
+						auto npos = Vec2<int>{ i * ZFACTOR + x + zoomWindowPosition.X, j * ZFACTOR + y + zoomWindowPosition.Y } * PIXEL_SCALE;
+						for (int ny = 0; ny < PIXEL_SCALE; ny++)
+							for (int nx = 0; nx < PIXEL_SCALE; nx++)
+								video[npos + Vec2<int>{nx, ny}] = pix;
+					}
 			}
 		if (zoomEnabled)
 		{

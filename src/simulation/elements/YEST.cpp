@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_YEST()
 {
 	Identifier = "DEFAULT_PT_YEST";
-	Name = "YEST";
+	Name = "Yeast";
 	Colour = 0xEEE0C0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

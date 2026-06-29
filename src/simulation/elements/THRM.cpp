@@ -3,7 +3,7 @@
 void Element::Element_THRM()
 {
 	Identifier = "DEFAULT_PT_THRM";
-	Name = "THRM";
+	Name = "Thermite";
 	Colour = 0xA08090_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_PLUT()
 {
 	Identifier = "DEFAULT_PT_PLUT";
-	Name = "PLUT";
+	Name = "Plutonium";
 	Colour = 0x407020_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_NUCLEAR;

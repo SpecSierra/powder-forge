@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_FIRW()
 {
 	Identifier = "DEFAULT_PT_FIRW";
-	Name = "FIRW";
+	Name = "Firework";
 	Colour = 0xFFA040_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

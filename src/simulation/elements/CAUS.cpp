@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_CAUS()
 {
 	Identifier = "DEFAULT_PT_CAUS";
-	Name = "CAUS";
+	Name = "Caustic";
 	Colour = 0x80FFA0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_GAS;

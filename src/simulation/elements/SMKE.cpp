@@ -5,7 +5,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_SMKE()
 {
 	Identifier = "DEFAULT_PT_SMKE";
-	Name = "SMKE";
+	Name = "Smoke";
 	Colour = 0x222222_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_GAS;

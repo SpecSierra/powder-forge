@@ -1,6 +1,7 @@
 graphics_files = files(
 	'Gradient.cpp',
 	'Graphics.cpp',
+	'PixelScale.cpp',
 	'RasterGraphics.cpp',
 	'FontReader.cpp',
 	'TrueTypeFont.cpp',

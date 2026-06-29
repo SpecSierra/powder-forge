@@ -10,7 +10,7 @@ static void create_line_par(Simulation * sim, int x1, int y1, int x2, int y2, in
 void Element::Element_LIGH()
 {
 	Identifier = "DEFAULT_PT_LIGH";
-	Name = "LIGH";
+	Name = "Lightning";
 	Colour = 0xFFFFC0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

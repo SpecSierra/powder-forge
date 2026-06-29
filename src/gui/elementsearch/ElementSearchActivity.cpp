@@ -18,7 +18,7 @@
 #include "graphics/Graphics.h"
 
 ElementSearchActivity::ElementSearchActivity(GameController * gameController, std::vector<Tool*> tools) :
-	WindowActivity(ui::Point(-1, -1), ui::Point(236, 302)),
+	WindowActivity(ui::Point(-1, -1), ui::Point(500, 390)),
 	firstResult(nullptr),
 	gameController(gameController),
 	tools(tools),
@@ -68,6 +68,8 @@ void ElementSearchActivity::searchTools(String query)
 
 	ui::Point viewPosition = { 1, 1 };
 	ui::Point current = ui::Point(0, 0);
+	constexpr int btnH = 18;
+	int availW = scrollPanel->Size.X - viewPosition.X * 2;
 
 	String queryLower = query.ToLower();
 
@@ -144,12 +146,23 @@ void ElementSearchActivity::searchTools(String query)
 			firstResult = tool;
 
 		std::unique_ptr<VideoBuffer> tempTexture = tool->GetTexture(Vec2(26, 14));
-		ToolButton * tempButton;
 
+		int btnW = tempTexture
+			? 32
+			: std::max(Graphics::TextSize(tool->Name).X + 8, 30);
+
+		// Wrap to next row if this button doesn't fit
+		if (current.X > 0 && current.X + btnW > availW)
+		{
+			current.X = 0;
+			current.Y += btnH + 1;
+		}
+
+		ToolButton * tempButton;
 		if(tempTexture)
-			tempButton = new ToolButton(current+viewPosition, ui::Point(30, 18), "", tool->Identifier, tool->Description);
+			tempButton = new ToolButton(current+viewPosition, ui::Point(btnW, btnH), "", tool->Identifier, tool->Description);
 		else
-			tempButton = new ToolButton(current+viewPosition, ui::Point(30, 18), tool->Name, tool->Identifier, tool->Description);
+			tempButton = new ToolButton(current+viewPosition, ui::Point(btnW, btnH), tool->Name, tool->Identifier, tool->Description);
 
 		tempButton->Appearance.SetTexture(std::move(tempTexture));
 		tempButton->Appearance.BackgroundInactive = tool->Colour.WithAlpha(0xFF);
@@ -159,34 +172,19 @@ void ElementSearchActivity::searchTools(String query)
 		} });
 
 		if(gameController->GetActiveTool(0) == tool)
-		{
-			tempButton->SetSelectionState(0);	//Primary
-		}
+			tempButton->SetSelectionState(0);
 		else if(gameController->GetActiveTool(1) == tool)
-		{
-			tempButton->SetSelectionState(1);	//Secondary
-		}
+			tempButton->SetSelectionState(1);
 		else if(gameController->GetActiveTool(2) == tool)
-		{
-			tempButton->SetSelectionState(2);	//Tertiary
-		}
+			tempButton->SetSelectionState(2);
 
 		toolButtons.push_back(tempButton);
 		scrollPanel->AddChild(tempButton);
 
-		current.X += 31;
-
-		if(current.X + 30 > searchField->Size.X) {
-			current.X = 0;
-			current.Y += 19;
-		}
+		current.X += btnW + 1;
 	}
 
-	if (current.X == 0)
-	{
-		current.Y -= 19;
-	}
-	scrollPanel->InnerSize = ui::Point(scrollPanel->Size.X, current.Y + 20);
+	scrollPanel->InnerSize = ui::Point(scrollPanel->Size.X, current.Y + btnH + viewPosition.Y + 1);
 }
 
 void ElementSearchActivity::SetActiveTool(int selectionState, Tool * tool)

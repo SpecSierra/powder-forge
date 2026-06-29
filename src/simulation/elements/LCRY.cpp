@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_LCRY()
 {
 	Identifier = "DEFAULT_PT_LCRY";
-	Name = "LCRY";
+	Name = "Liq. Crystal";
 	Colour = 0x505050_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWERED;

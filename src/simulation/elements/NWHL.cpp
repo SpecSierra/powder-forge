@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_NWHL()
 {
 	Identifier = "DEFAULT_PT_NWHL";
-	Name = "WHOL";
+	Name = "White Hole";
 	Colour = 0xFFFFFF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

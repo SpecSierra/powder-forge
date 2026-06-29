@@ -7,7 +7,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_FILT()
 {
 	Identifier = "DEFAULT_PT_FILT";
-	Name = "FILT";
+	Name = "Filter";
 	Colour = 0x000056_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

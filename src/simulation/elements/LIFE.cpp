@@ -6,7 +6,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_LIFE()
 {
 	Identifier = "DEFAULT_PT_LIFE";
-	Name = "LIFE";
+	Name = "Game of Life";
 	Colour = 0x0CAC00_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_LIFE;

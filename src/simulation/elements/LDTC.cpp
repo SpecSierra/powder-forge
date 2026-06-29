@@ -6,7 +6,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_LDTC()
 {
 	Identifier = "DEFAULT_PT_LDTC";
-	Name = "LDTC";
+	Name = "Linear Detector";
 	Colour = 0x66ff66_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SENSOR;

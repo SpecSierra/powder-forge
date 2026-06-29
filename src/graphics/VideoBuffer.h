@@ -20,6 +20,11 @@ class VideoBuffer: public RasterDrawMethods<VideoBuffer>
 		return video.Size().OriginRect();
 	}
 
+	int GetPixelScale() const
+	{
+		return 1;
+	}
+
 	friend struct RasterDrawMethods<VideoBuffer>;
 
 public:

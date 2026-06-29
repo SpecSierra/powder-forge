@@ -10,7 +10,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_SPRK()
 {
 	Identifier = "DEFAULT_PT_SPRK";
-	Name = "SPRK";
+	Name = "Spark";
 	Colour = 0xFFFF80_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

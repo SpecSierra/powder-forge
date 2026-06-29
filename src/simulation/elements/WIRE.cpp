@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_WIRE()
 {
 	Identifier = "DEFAULT_PT_WIRE";
-	Name = "WWLD";
+	Name = "WireWorld";
 	Colour = 0xFFCC00_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

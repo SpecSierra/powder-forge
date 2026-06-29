@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_BASE()
 {
 	Identifier = "DEFAULT_PT_BASE";
-	Name = "BASE";
+	Name = "Chemical Base";
 	Colour = 0x90D5FF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_LIQUID;

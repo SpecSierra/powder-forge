@@ -2,8 +2,23 @@
 #include "common/String.h"
 #include "common/Vec2.h"
 #include "graphics/Pixel.h"
+#include <cstring>
+#include <vector>
 
 class VideoBuffer;
+
+// Separate pixel buffer at window-native resolution used to render UI text
+// without the aliasing caused by upscaling the game framebuffer.
+struct NativeTextOverlay
+{
+	std::vector<uint32_t> pixels; // ARGB8888 with alpha
+	int w = 0, h = 0;            // window pixel dimensions
+	float scaleX = 1.0f;         // overlay pixels per logical game pixel (X)
+	float scaleY = 1.0f;         // overlay pixels per logical game pixel (Y)
+	int baseX = 0, baseY = 0;    // game rect top-left in window pixels
+	bool active = false;
+	void Clear() { std::memset(pixels.data(), 0, pixels.size() * sizeof(uint32_t)); }
+};
 
 // This is a mixin that adds methods to the Derived class, using the "Curiously
 // Recurring Template Pattern" trick.
@@ -41,6 +56,10 @@ struct RasterDrawMethods
 	void BlendRGBAImage(pixel_rgba const *, Rect<int>);
 	void BlendRGBAImage(pixel_rgba const *, Rect<int>, size_t rowStride);
 
+	// Write a single pixel at native buffer coordinates (no clip, no block expansion).
+	// Used by the TrueType renderer to place pre-rasterised glyph pixels exactly.
+	void BlendNativePixel(Vec2<int>, RGBA);
+
 	// Returns width of character
 	int BlendChar(Vec2<int>, String::value_type, RGBA);
 	int AddChar(Vec2<int>, String::value_type, RGBA);
@@ -60,4 +79,7 @@ struct RasterDrawMethods
 	static String::const_iterator TextFit(String const &, int width);
 
 	void Clear();
+
+	// Default: no native text overlay (VideoBuffer, Renderer). Graphics overrides this.
+	NativeTextOverlay *GetNativeTextOverlay() { return nullptr; }
 };

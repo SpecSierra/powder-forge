@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_FUSE()
 {
 	Identifier = "DEFAULT_PT_FUSE";
-	Name = "FUSE";
+	Name = "Fuse";
 	Colour = 0x0A5706_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

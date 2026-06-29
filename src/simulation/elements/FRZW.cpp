@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_FRZW()
 {
 	Identifier = "DEFAULT_PT_FRZW";
-	Name = "FRZW";
+	Name = "Freeze Water";
 	Colour = 0x1020C0_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_LIQUID;

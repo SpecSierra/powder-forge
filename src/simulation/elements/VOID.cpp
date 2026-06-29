@@ -3,7 +3,7 @@
 void Element::Element_VOID()
 {
 	Identifier = "DEFAULT_PT_VOID";
-	Name = "VOID";
+	Name = "Void";
 	Colour = 0x790B0B_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

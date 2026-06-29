@@ -7,7 +7,7 @@ static void changeType(ELEMENT_CHANGETYPE_FUNC_ARGS);
 void Element::Element_ETRD()
 {
 	Identifier = "DEFAULT_PT_ETRD";
-	Name = "ETRD";
+	Name = "Electrode";
 	Colour = 0x404040_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

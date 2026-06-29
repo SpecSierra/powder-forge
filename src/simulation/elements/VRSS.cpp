@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_VRSS()
 {
 	Identifier = "DEFAULT_PT_VRSS";
-	Name = "VRSS";
+	Name = "Virus Solid";
 	Colour = 0xD408CD_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_SOLIDS;

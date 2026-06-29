@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_FOG()
 {
 	Identifier = "DEFAULT_PT_FOG";
-	Name = "FOG";
+	Name = "Fog";
 	Colour = 0xAAAAAA_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_GAS;

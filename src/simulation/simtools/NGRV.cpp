@@ -5,7 +5,7 @@ static int perform(SimTool *tool, Simulation * sim, Particle * cpart, int x, int
 void SimTool::Tool_NGRV()
 {
 	Identifier = "DEFAULT_TOOL_NGRV";
-	Name = "NGRV";
+	Name = "Anti-Gravity";
 	Colour = 0xAACCFF_rgb;
 	Description = "Creates a short-lasting negative gravity well.";
 	Perform = &perform;

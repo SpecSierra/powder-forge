@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_NBHL()
 {
 	Identifier = "DEFAULT_PT_NBHL";
-	Name = "BHOL";
+	Name = "Black Hole";
 	Colour = 0x202020_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

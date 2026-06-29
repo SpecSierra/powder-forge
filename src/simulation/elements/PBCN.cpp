@@ -7,7 +7,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_PBCN()
 {
 	Identifier = "DEFAULT_PT_PBCN";
-	Name = "PBCN";
+	Name = "P. Break. Clone";
 	Colour = 0x3B1D0A_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWERED;

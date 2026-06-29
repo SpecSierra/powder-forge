@@ -9,7 +9,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_PHOT()
 {
 	Identifier = "DEFAULT_PT_PHOT";
-	Name = "PHOT";
+	Name = "Photon";
 	Colour = 0xFFFFFF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_NUCLEAR;

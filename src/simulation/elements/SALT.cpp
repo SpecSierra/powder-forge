@@ -3,7 +3,7 @@
 void Element::Element_SALT()
 {
 	Identifier = "DEFAULT_PT_SALT";
-	Name = "SALT";
+	Name = "Salt";
 	Colour = 0xFFFFFF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

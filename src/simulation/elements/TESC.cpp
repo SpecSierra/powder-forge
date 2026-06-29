@@ -5,7 +5,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_TESC()
 {
 	Identifier = "DEFAULT_PT_TESC";
-	Name = "TESC";
+	Name = "Tesla Coil";
 	Colour = 0x707040_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

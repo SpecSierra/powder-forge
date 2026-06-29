@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_SHLD1()
 {
 	Identifier = "DEFAULT_PT_SHLD1";
-	Name = "SHLD";
+	Name = "Shield";
 	Colour = 0xAAAAAA_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

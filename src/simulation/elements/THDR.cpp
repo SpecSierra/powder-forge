@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_THDR()
 {
 	Identifier = "DEFAULT_PT_THDR";
-	Name = "THDR";
+	Name = "Thunder";
 	Colour = 0xFFFFA0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

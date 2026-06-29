@@ -9,7 +9,7 @@ static void changeType(ELEMENT_CHANGETYPE_FUNC_ARGS);
 void Element::Element_STKM()
 {
 	Identifier = "DEFAULT_PT_STKM";
-	Name = "STKM";
+	Name = "Stickman";
 	Colour = 0xFFE0A0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

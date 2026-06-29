@@ -6,9 +6,9 @@
 #include "simulation/Simulation.h"
 
 SandEffectOption::SandEffectOption(GameModel * m):
-QuickOption("P", "Sand effect", m, Toggle)
+QuickOption(String(char32_t(0xE01C)), "Sand effect", m, Toggle)
 {
-
+	iconColour = 0xFAB387_rgb; // Peach
 }
 bool SandEffectOption::GetToggle()
 {
@@ -22,9 +22,9 @@ void SandEffectOption::perform()
 
 
 DrawGravOption::DrawGravOption(GameModel * m):
-QuickOption("G", "Draw gravity field \bg(ctrl+g)", m, Toggle)
+QuickOption(String(char32_t(0xE018)), "Draw gravity field \bg(ctrl+g)", m, Toggle)
 {
-
+	iconColour = 0x89DCEB_rgb; // Sky
 }
 bool DrawGravOption::GetToggle()
 {
@@ -38,9 +38,9 @@ void DrawGravOption::perform()
 
 
 DecorationsOption::DecorationsOption(GameModel * m):
-QuickOption("D", "Draw decorations \bg(ctrl+b)", m, Toggle)
+QuickOption(String(char32_t(0xE05F)), "Draw decorations \bg(ctrl+b)", m, Toggle)
 {
-
+	iconColour = 0xCBA6F7_rgb; // Mauve
 }
 bool DecorationsOption::GetToggle()
 {
@@ -54,9 +54,9 @@ void DecorationsOption::perform()
 
 
 NGravityOption::NGravityOption(GameModel * m):
-QuickOption("N", "Newtonian Gravity \bg(n)", m, Toggle)
+QuickOption(String(char32_t(0xE019)), "Newtonian Gravity \bg(n)", m, Toggle)
 {
-
+	iconColour = 0xF9E2AF_rgb; // Yellow
 }
 bool NGravityOption::GetToggle()
 {
@@ -70,9 +70,9 @@ void NGravityOption::perform()
 
 
 AHeatOption::AHeatOption(GameModel * m):
-QuickOption("A", "Ambient heat \bg(u)", m, Toggle)
+QuickOption(String(char32_t(0xE03E)), "Ambient heat \bg(u)", m, Toggle)
 {
-
+	iconColour = 0xF38BA8_rgb; // Red
 }
 bool AHeatOption::GetToggle()
 {
@@ -86,8 +86,9 @@ void AHeatOption::perform()
 
 
 ConsoleShowOption::ConsoleShowOption(GameModel * m, GameController * c_):
-QuickOption("C", "Show Console \bg(~)", m, Toggle)
+QuickOption(String(char32_t(0xE065)), "Show Console \bg(~)", m, Toggle)
 {
+	iconColour = 0xA6E3A1_rgb; // Green
 	c = c_;
 }
 bool ConsoleShowOption::GetToggle()

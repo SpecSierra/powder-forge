@@ -6,7 +6,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_GLAS()
 {
 	Identifier = "DEFAULT_PT_GLAS";
-	Name = "GLAS";
+	Name = "Glass";
 	Colour = 0x404040_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

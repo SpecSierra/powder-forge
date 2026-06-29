@@ -3,7 +3,7 @@
 void Element::Element_BGLA()
 {
 	Identifier = "DEFAULT_PT_BGLA";
-	Name = "BGLA";
+	Name = "Broken Glass";
 	Colour = 0x606060_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

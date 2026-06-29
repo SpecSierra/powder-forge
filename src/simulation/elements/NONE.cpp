@@ -6,7 +6,7 @@ static std::unique_ptr<VideoBuffer> iconGen(int wallID, Vec2<int> size);
 void Element::Element_NONE()
 {
 	Identifier = "DEFAULT_PT_NONE";
-	Name = "NONE";
+	Name = "Eraser";
 	Colour = 0x000000_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

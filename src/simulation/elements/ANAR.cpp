@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_ANAR()
 {
 	Identifier = "DEFAULT_PT_ANAR";
-	Name = "ANAR";
+	Name = "Anti-grav Dust";
 	Colour = 0xFFFFEE_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

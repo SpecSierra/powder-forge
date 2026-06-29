@@ -9,7 +9,7 @@ static void Free(Simulation *sim, unsigned char i);
 void Element::Element_FIGH()
 {
 	Identifier = "DEFAULT_PT_FIGH";
-	Name = "FIGH";
+	Name = "Fighter";
 	Colour = 0xFFE0A0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SPECIAL;

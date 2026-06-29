@@ -4,7 +4,7 @@
 void Element::Element_BVBR()
 {
 	Identifier = "DEFAULT_PT_BVBR";
-	Name = "BVBR";
+	Name = "Broken Vibr.";
 	Colour = 0x005000_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_NUCLEAR;

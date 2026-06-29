@@ -324,10 +324,14 @@ GameView::GameView():
 	pauseButton->SetActionCallback({ [this] { c->SetPaused(pauseButton->GetToggleState()); } });
 	AddComponent(pauseButton);
 
-	ui::Button * tempButton = new ui::Button(ui::Point(WINDOWW-16, WINDOWH-32), ui::Point(15, 15), 0xE065, "Search for elements");
-	tempButton->Appearance.Margin = ui::Border(0, 2, 3, 2);
-	tempButton->SetActionCallback({ [this] { c->OpenElementSearch(); } });
-	AddComponent(tempButton);
+	{
+		String searchText; searchText += String::value_type(0xE065); searchText += " Search";
+		ui::Button * tempButton = new ui::Button(ui::Point(XRES+1, WINDOWH-32), ui::Point(BARSIZE-2, 15), searchText, "Search for elements");
+		tempButton->Appearance.Margin = ui::Border(2, 2, 2, 2);
+		tempButton->Appearance.HorizontalAlign = ui::Appearance::AlignLeft;
+		tempButton->SetActionCallback({ [this] { c->OpenElementSearch(); } });
+		AddComponent(tempButton);
+	}
 
 	colourPicker = new ui::Button(ui::Point((XRES/2)-8, YRES+1), ui::Point(16, 16), "", "Pick Colour");
 	colourPicker->SetActionCallback({ [this] { c->OpenColourPicker(); } });
@@ -381,8 +385,20 @@ void GameView::NotifyQuickOptionsChanged(GameModel * sender)
 	std::vector<QuickOption*> optionList = sender->GetQuickOptions();
 	for(auto *option : optionList)
 	{
-		ui::Button * tempButton = new ui::Button(ui::Point(WINDOWW-16, currentY), ui::Point(15, 15), option->GetIcon(), option->GetDescription());
-		//tempButton->Appearance.Margin = ui::Border(0, 2, 3, 2);
+		String desc = option->GetDescription();
+		auto bpos = desc.find(char32_t('\b'));
+		String shortLabel = (bpos != String::npos) ? desc.substr(0, bpos) : desc;
+		while (!shortLabel.empty() && shortLabel.back() == ' ')
+			shortLabel.pop_back();
+		String qoText = option->GetIcon();
+		qoText += " ";
+		qoText += shortLabel;
+		ui::Button * tempButton = new ui::Button(ui::Point(XRES+1, currentY), ui::Point(BARSIZE-2, 15), qoText, "");
+		tempButton->Appearance.Margin = ui::Border(2, 2, 2, 2);
+		tempButton->Appearance.HorizontalAlign = ui::Appearance::AlignLeft;
+		tempButton->Appearance.TextInactive = option->GetIconColour().WithAlpha(255);
+		tempButton->Appearance.TextHover    = option->GetIconColour().WithAlpha(255);
+		tempButton->Appearance.TextActive   = 0x1E1E2E_rgb .WithAlpha(255);
 		tempButton->SetTogglable(true);
 		tempButton->SetActionCallback({ [option] {
 			option->Perform();
@@ -417,13 +433,42 @@ void GameView::NotifyMenuListChanged(GameModel * sender)
 		{
 			String tempString = "";
 			tempString += menuList[i]->GetIcon();
-			String description = menuList[i]->GetDescription();
+			String shortName = menuList[i]->GetDescription(); // label shown in sidebar
+			String description = shortName;
 			if (i == SC_FAVORITES && !Favorite::Ref().AnyFavorites())
 				description += " (Use ctrl+shift+click to toggle the favorite status of an element)";
-			auto *tempButton = new MenuButton(ui::Point(WINDOWW-16, currentY), ui::Point(15, 15), tempString, description);
-			tempButton->Appearance.Margin = ui::Border(0, 2, 3, 2);
+			// button text = icon PUA char + space + category name
+			String buttonText = tempString + " " + shortName;
+			auto *tempButton = new MenuButton(ui::Point(XRES+1, currentY), ui::Point(BARSIZE-2, 15), buttonText, description);
+			tempButton->Appearance.Margin = ui::Border(2, 2, 2, 2);
+			tempButton->Appearance.HorizontalAlign = ui::Appearance::AlignLeft;
 			tempButton->menuID = i;
 			tempButton->needsClick = i == SC_DECO;
+			// Distinct Catppuccin Mocha colour per menu section
+			static const RGB menuColours[] = {
+				0xB4BEFE_rgb, // SC_WALL      (0)  Lavender
+				0xF9E2AF_rgb, // SC_ELEC      (1)  Yellow
+				0xFAB387_rgb, // SC_POWERED   (2)  Peach
+				0x89DCEB_rgb, // SC_SENSOR    (3)  Sky
+				0x74C7EC_rgb, // SC_FORCE     (4)  Sapphire
+				0xF38BA8_rgb, // SC_EXPLOSIVE (5)  Red
+				0xCBA6F7_rgb, // SC_GAS       (6)  Mauve
+				0x89B4FA_rgb, // SC_LIQUID    (7)  Blue
+				0xF2CDCD_rgb, // SC_POWDERS   (8)  Flamingo
+				0x94E2D5_rgb, // SC_SOLIDS    (9)  Teal
+				0xA6E3A1_rgb, // SC_NUCLEAR   (10) Green
+				0xF5C2E7_rgb, // SC_SPECIAL   (11) Pink
+				0xEBA0AC_rgb, // SC_LIFE      (12) Maroon
+				0xF5E0DC_rgb, // SC_TOOL      (13) Rosewater
+				0xF9E2AF_rgb, // SC_FAVORITES (14) Yellow (star)
+				0xF5C2E7_rgb, // SC_DECO      (15) Pink   (paint)
+			};
+			if (i >= 0 && i < int(sizeof(menuColours) / sizeof(menuColours[0])))
+			{
+				tempButton->Appearance.TextInactive = menuColours[i].WithAlpha(255);
+				tempButton->Appearance.TextHover    = menuColours[i].WithAlpha(255);
+				tempButton->Appearance.TextActive   = 0x1E1E2E_rgb .WithAlpha(255);
+			}
 			tempButton->SetTogglable(true);
 			auto mouseEnterCallback = [this, tempButton] {
 				// don't immediately change the active menu, the actual set is done inside GameView::OnMouseMove
@@ -559,26 +604,37 @@ void GameView::NotifyActiveMenuToolListChanged(GameModel * sender)
 	}
 	toolButtons.clear();
 	std::vector<Tool*> toolList = sender->GetActiveMenuToolList();
-	int currentX = 0;
+	// Track the right edge of the next button's slot.
+	// Each button is placed so its right edge = rightEdge, then rightEdge moves left by (btnW+1).
+	// This prevents overlap when adjacent buttons differ in width.
+	int rightEdge = 0;
 	for (size_t i = 0; i < toolList.size(); i++)
 	{
 		auto *tool = toolList[i];
-		auto tempTexture = tool->GetTexture(Vec2(26, 14));
+		int btnW;
+		if (!tool->Name.empty())
+			btnW = Graphics::TextSize(tool->Name).X - 1 + 8; // 4px padding each side
+		else
+			btnW = 36;
+		btnW = std::max(btnW, 20); // floor
+
+		int leftEdge = rightEdge - btnW;
+
+		auto tempTexture = tool->GetTexture(Vec2(btnW - 4, 14));
 		ToolButton * tempButton;
 
 		//get decotool texture manually, since it changes depending on it's own color
 		if (sender->GetActiveMenu() == SC_DECO)
-			tempTexture = static_cast<DecorationTool *>(tool)->GetIcon(tool->ToolID, Vec2(26, 14));
+			tempTexture = static_cast<DecorationTool *>(tool)->GetIcon(tool->ToolID, Vec2(btnW - 4, 14));
 
 		if (tempTexture)
-			tempButton = new ToolButton(ui::Point(currentX, YRES+1), ui::Point(30, 18), "", tool->Identifier, tool->Description);
+			tempButton = new ToolButton(ui::Point(leftEdge, YRES+1), ui::Point(btnW, 18), "", tool->Identifier, tool->Description);
 		else
-			tempButton = new ToolButton(ui::Point(currentX, YRES+1), ui::Point(30, 18), tool->Name, tool->Identifier, tool->Description);
+			tempButton = new ToolButton(ui::Point(leftEdge, YRES+1), ui::Point(btnW, 18), tool->Name, tool->Identifier, tool->Description);
 
 		tempButton->ClipRect = RectSized(Vec2(1, RES.Y + 1), Vec2(RES.X - 1, 18));
 
-		//currentY -= 17;
-		currentX -= 31;
+		rightEdge = leftEdge - 1; // 1px gap between buttons
 		tempButton->tool = tool;
 		tempButton->SetActionCallback({ [this, tempButton] {
 			auto *tool = tempButton->tool;
@@ -1040,9 +1096,12 @@ void GameView::updateToolButtonScroll()
 
 		int offsetDelta = 0;
 
-		int newInitialX = WINDOWW - 56;
-		int totalWidth = (toolButtons[0]->Size.X + 1) * toolButtons.size();
-		int scrollSize = (int)(((float)(XRES - BARSIZE))/((float)totalWidth) * ((float)XRES - BARSIZE));
+		int totalWidth = 0;
+		for (auto *btn : toolButtons) totalWidth += btn->Size.X + 1;
+		// Anchor the RIGHT edge of the rightmost button (index 0) to a fixed x position.
+		// Original design: right edge = XRES - 9 = 603. Subtract button[0] width to get its left edge.
+		int newInitialX = (XRES - 9) - toolButtons[0]->Size.X;
+		int scrollSize = (int)(((float)(XRES - 17))/((float)totalWidth) * ((float)XRES - 17));
 
 		if (scrollSize > XRES - 1)
 			scrollSize = XRES - 1;
@@ -1064,7 +1123,7 @@ void GameView::updateToolButtonScroll()
 
 			scrollBar->Position.X = (int)(((float)mouseX / (float)XRES) * (float)(XRES - scrollSize)) + 1;
 
-			overflow = (float)(totalWidth - (XRES - BARSIZE));
+			overflow = (float)(totalWidth - (XRES - 17));
 			mouseLocation = (float)(XRES - 3)/(float)((XRES - 2) - mouseX); // mouseLocation adjusted slightly in case you have 200 elements in one menu
 
 			newInitialX += (int)(overflow/mouseLocation);
@@ -1082,6 +1141,7 @@ void GameView::updateToolButtonScroll()
 		{
 			button->Position.X -= offsetDelta;
 		}
+
 
 		// Ensure that mouseLeave events are make their way to the buttons should they move from underneath the mouse pointer
 		if (toolButtons[0]->Position.Y < y && toolButtons[0]->Position.Y + toolButtons[0]->Size.Y > y)
@@ -1237,7 +1297,7 @@ void GameView::OnMouseUp(int x, int y, unsigned button)
 			{
 				if (selectMode == PlaceSave)
 				{
-					if (placeSaveThumb && y <= WINDOWH-BARSIZE)
+					if (placeSaveThumb && y < YRES)
 					{
 						c->PlaceSave(PlaceSavePos());
 					}
@@ -1314,20 +1374,14 @@ void GameView::ToolTip(ui::Point senderPosition, String toolTip)
 			isButtonTipFadingIn = true;
 		}
 	}
-	// quickoption and menu tooltips
-	else if(senderPosition.X > Size.X-BARSIZE)// < Size.Y-(quickOptionButtons.size()+1)*16)
-	{
-		this->toolTip = toolTip;
-		toolTipPosition = ui::Point(Size.X-27-(Graphics::TextSize(toolTip).X - 1), senderPosition.Y+3);
-		if(toolTipPosition.Y+10 > Size.Y-MENUSIZE)
-			toolTipPosition = ui::Point(Size.X-27-(Graphics::TextSize(toolTip).X - 1), Size.Y-MENUSIZE-10);
-		isToolTipFadingIn = true;
-	}
-	// element tooltips
+	// quickoption, menu, and element tooltips — always bottom-right of the game area
 	else
 	{
 		this->toolTip = toolTip;
-		toolTipPosition = ui::Point(Size.X-27-(Graphics::TextSize(toolTip).X - 1), Size.Y-MENUSIZE-10);
+		int textW = Graphics::TextSize(toolTip).X - 1;
+		int tipX = XRES - 4 - textW;
+		if (tipX < 4) tipX = 4;
+		toolTipPosition = ui::Point(tipX, Size.Y-MENUSIZE-10);
 		isToolTipFadingIn = true;
 	}
 }
@@ -2188,7 +2242,10 @@ void GameView::OnDraw()
 		}
 	}
 
-	std::copy_n(rendererFrame->data(), rendererFrame->Size().X * rendererFrame->Size().Y, g->Data());
+	// Expand the sim frame into the native graphics buffer.  BlendImage with
+	// ps=PIXEL_SCALE maps each 1×1 sim pixel to a PIXEL_SCALE×PIXEL_SCALE native
+	// block, giving pixel-perfect simulation rendering at any display scale.
+	g->BlendImage(rendererFrame->data(), 0xFF, RectSized(Vec2<int>{ 0, 0 }, rendererFrame->Size()));
 
 	// ── Modern UI: paint backgrounds for menu and sidebar areas ──────────────────
 	// Tool-button strip (YRES..YRES+MENUSIZE-1) – dark base surface

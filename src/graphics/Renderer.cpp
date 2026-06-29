@@ -16,8 +16,96 @@
 #include <cmath>
 #include <numbers>
 
+// ── Cloud background ─────────────────────────────────────────────────────────
+
+static float cloudValueNoise(float x, float y, int seed)
+{
+	int ix = (int)std::floor(x);
+	int iy = (int)std::floor(y);
+	float fx = x - ix; fx = fx * fx * (3.f - 2.f * fx); // smoothstep
+	float fy = y - iy; fy = fy * fy * (3.f - 2.f * fy);
+	auto h = [](int xi, int yi, int s) -> float {
+		int n = xi * 1619 + yi * 31337 + s * 1013904223;
+		n ^= (n << 13);
+		n = (n * (n * n * 15731 + 789221) + 1376312589) & 0x7FFFFFFF;
+		return (n & 0xFF) / 255.0f;
+	};
+	float aa = h(ix,   iy,   seed);
+	float ba = h(ix+1, iy,   seed);
+	float ab = h(ix,   iy+1, seed);
+	float bb = h(ix+1, iy+1, seed);
+	return aa*(1-fx)*(1-fy) + ba*fx*(1-fy) + ab*(1-fx)*fy + bb*fx*fy;
+}
+
+void Renderer::GenerateCloudTexture()
+{
+	cloudTex.resize(CLOUD_TEX_W * YRES);
+	for (int y = 0; y < YRES; ++y)
+	{
+		float fy = (float)y / YRES;
+
+		// Sky gradient: deep midnight blue at top, dark navy at bottom
+		float skyR = 14.f + 10.f * fy;
+		float skyG = 16.f + 12.f * fy;
+		float skyB = 36.f + 22.f * fy;
+
+		for (int x = 0; x < CLOUD_TEX_W; ++x)
+		{
+			float fx = (float)x / CLOUD_TEX_W;
+
+			// Four octaves of value noise → cloud density
+			float cloud = 0.f;
+			cloud += cloudValueNoise(fx * 5.f,  fy * 2.5f, 42) * 0.50f;
+			cloud += cloudValueNoise(fx * 10.f, fy * 5.f,  73) * 0.25f;
+			cloud += cloudValueNoise(fx * 20.f, fy * 10.f, 17) * 0.125f;
+			cloud += cloudValueNoise(fx * 40.f, fy * 20.f, 91) * 0.0625f;
+
+			// Clouds are lighter near the top of the sky
+			float heightFade = std::max(0.f, 1.f - fy * 1.8f);
+			cloud = std::max(0.f, (cloud - 0.52f) * 3.5f) * heightFade;
+			cloud = std::min(1.f, cloud);
+
+			// Cloud colour: soft blue-grey wisp on the dark sky
+			int r = (int)(skyR + (78.f  - skyR) * cloud);
+			int g = (int)(skyG + (90.f  - skyG) * cloud);
+			int b = (int)(skyB + (130.f - skyB) * cloud);
+			cloudTex[y * CLOUD_TEX_W + x] = RGB(r, g, b).Pack();
+		}
+	}
+}
+
+void Renderer::DrawBackground()
+{
+	if (displayMode & DISPLAY_PERS)
+		return; // persistence mode uses the accumulated buffer as background
+
+	cloudOffset += 0.08f; // ~5 px/sec at 60 fps — lazy cloud drift
+	if (cloudOffset >= CLOUD_TEX_W)
+		cloudOffset -= CLOUD_TEX_W;
+
+	int ix = (int)cloudOffset;
+	float fx = cloudOffset - ix;
+
+	for (int y = 0; y < YRES; ++y)
+	{
+		const pixel *row = cloudTex.data() + y * CLOUD_TEX_W;
+		for (int x = 0; x < XRES; ++x)
+		{
+			int sx  = (ix + x)     % CLOUD_TEX_W;
+			int sx1 = (ix + x + 1) % CLOUD_TEX_W;
+			auto c0 = RGB::Unpack(row[sx]);
+			auto c1 = RGB::Unpack(row[sx1]);
+			int r = (int)(c0.Red   + (c1.Red   - c0.Red)   * fx);
+			int g = (int)(c0.Green + (c1.Green - c0.Green) * fx);
+			int b = (int)(c0.Blue  + (c1.Blue  - c0.Blue)  * fx);
+			video[{x, y}] = RGB(r, g, b).Pack();
+		}
+	}
+}
+
 void Renderer::RenderBackground()
 {
+	DrawBackground();
 	draw_air();
 }
 
@@ -1589,6 +1677,7 @@ void Renderer::PopulateTables()
 Renderer::Renderer()
 {
 	PopulateTables();
+	GenerateCloudTexture();
 
 	memset(fire_r, 0, sizeof(fire_r));
 	memset(fire_g, 0, sizeof(fire_g));

@@ -6,7 +6,7 @@ static void changeType(ELEMENT_CHANGETYPE_FUNC_ARGS);
 void Element::Element_SPAWN2()
 {
 	Identifier = "DEFAULT_PT_SPAWN2";
-	Name = "SPWN2";
+	Name = "Spawner 2";
 	Colour = 0xAAAAAA_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_SOLIDS;

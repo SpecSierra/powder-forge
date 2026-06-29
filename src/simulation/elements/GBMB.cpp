@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_GBMB()
 {
 	Identifier = "DEFAULT_PT_GBMB";
-	Name = "GBMB";
+	Name = "Gravity Bomb";
 	Colour = 0x1144BB_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_FORCE;

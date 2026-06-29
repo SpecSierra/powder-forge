@@ -6,7 +6,7 @@ static int perform(SimTool *tool, Simulation * sim, Particle * cpart, int x, int
 void SimTool::Tool_AIR()
 {
 	Identifier = "DEFAULT_TOOL_AIR";
-	Name = "AIR";
+	Name = "Air";
 	Colour = 0xFFFFFF_rgb;
 	Description = "Air, creates airflow and pressure.";
 	Perform = &perform;

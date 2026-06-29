@@ -8,7 +8,7 @@ static void performDrag(SimTool *tool, Simulation *sim, const Brush &brush, ui::
 void SimTool::Tool_WIND()
 {
 	Identifier = "DEFAULT_TOOL_WIND";
-	Name = "WIND";
+	Name = "Wind";
 	Colour = 0x404040_rgb;
 	Description = "Creates air movement.";
 	PerformDrawLine = &performDrawLine;

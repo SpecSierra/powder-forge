@@ -6,7 +6,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_FWRK()
 {
 	Identifier = "DEFAULT_PT_FWRK";
-	Name = "FWRK";
+	Name = "Old Firework";
 	Colour = 0x666666_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

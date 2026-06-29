@@ -6,7 +6,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_PQRT()
 {
 	Identifier = "DEFAULT_PT_PQRT";
-	Name = "PQRT";
+	Name = "Powered Quartz";
 	Colour = 0x88BBBB_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

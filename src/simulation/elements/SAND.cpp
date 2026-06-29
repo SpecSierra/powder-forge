@@ -3,7 +3,7 @@
 void Element::Element_SAND()
 {
 	Identifier = "DEFAULT_PT_SAND";
-	Name = "SAND";
+	Name = "Sand";
 	Colour = 0xFFD090_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

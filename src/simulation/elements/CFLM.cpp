@@ -6,7 +6,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_CFLM()
 {
 	Identifier = "DEFAULT_PT_HFLM";
-	Name = "CFLM";
+	Name = "Cold Flame";
 	Colour = 0x8080FF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

@@ -7,7 +7,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_PLSM()
 {
 	Identifier = "DEFAULT_PT_PLSM";
-	Name = "PLSM";
+	Name = "Plasma";
 	Colour = 0xBB99FF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_GAS;

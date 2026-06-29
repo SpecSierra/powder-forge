@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_TSNS()
 {
 	Identifier = "DEFAULT_PT_TSNS";
-	Name = "TSNS";
+	Name = "Temp Sensor";
 	Colour = 0xFD00D5_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SENSOR;

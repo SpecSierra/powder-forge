@@ -3,7 +3,7 @@
 void Element::Element_GAS()
 {
 	Identifier = "DEFAULT_PT_GAS";
-	Name = "GAS";
+	Name = "Gas";
 	Colour = 0xE0FF20_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_GAS;

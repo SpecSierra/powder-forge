@@ -3,7 +3,7 @@
 void Element::Element_RBDM()
 {
 	Identifier = "DEFAULT_PT_RBDM";
-	Name = "RBDM";
+	Name = "Rubidium";
 	Colour = 0xCCCCCC_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_EXPLOSIVE;

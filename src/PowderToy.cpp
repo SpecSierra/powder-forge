@@ -11,6 +11,7 @@
 #include "client/http/GetSaveDataRequest.h"
 #include "common/platform/Platform.h"
 #include "graphics/Graphics.h"
+#include "graphics/PixelScale.h"
 #include "simulation/SaveRenderer.h"
 #include "simulation/SimulationData.h"
 #include "common/tpt-rand.h"
@@ -151,7 +152,7 @@ static void BlueScreen(String detailMessage, std::optional<std::vector<String>> 
 				running = false;
 			}
 		}
-		blit(engine.g->Data());
+		blit(engine.g->Data(), nullptr);
 	}
 
 	// Don't use Platform::Exit, we're practically zombies at this point anyway.
@@ -351,8 +352,8 @@ int Main(int argc, char *argv[])
 	auto &prefs = GlobalPrefs::Ref();
 
 	WindowFrameOps windowFrameOps{
-		prefs.Get("Scale", 1),
-		prefs.Get("Resizable", false),
+		prefs.Get("Scale", 2),
+		prefs.Get("Resizable", true),
 		prefs.Get("Fullscreen", false),
 		prefs.Get("AltFullscreen", false),
 		prefs.Get("ForceIntegerScaling", true),
@@ -441,7 +442,10 @@ int Main(int argc, char *argv[])
 
 	// TODO: maybe bind the maximum allowed scale to screen size somehow
 	if(windowFrameOps.scale < 1 || windowFrameOps.scale > SCALE_MAXIMUM)
-		windowFrameOps.scale = 1;
+		windowFrameOps.scale = 2;
+
+	// Must be set before new Graphics() so the pixel buffer is sized correctly.
+	PIXEL_SCALE = windowFrameOps.scale;
 
 	auto &engine = ui::Engine::Ref();
 	engine.g = new Graphics();
@@ -546,7 +550,7 @@ int Main(int argc, char *argv[])
 		String loadingText = "Loading save...";
 		engine.g->BlendText(engine.g->Size() / 2 - Vec2((Graphics::TextSize(loadingText).X - 1) / 2, 5), loadingText, style::Colour::InformationTitle);
 
-		blit(engine.g->Data());
+		blit(engine.g->Data(), nullptr);
 		try
 		{
 			ByteString saveIdPart;

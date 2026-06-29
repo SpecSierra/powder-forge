@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_FRZZ()
 {
 	Identifier = "DEFAULT_PT_FRZZ";
-	Name = "FRZZ";
+	Name = "Freeze Powder";
 	Colour = 0xC0E0FF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

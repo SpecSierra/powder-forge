@@ -5,7 +5,7 @@ static int perform(SimTool *tool, Simulation * sim, Particle * cpart, int x, int
 void SimTool::Tool_PGRV()
 {
 	Identifier = "DEFAULT_TOOL_PGRV";
-	Name = "PGRV";
+	Name = "Gravity";
 	Colour = 0xCCCCFF_rgb;
 	Description = "Creates a short-lasting gravity well.";
 	Perform = &perform;

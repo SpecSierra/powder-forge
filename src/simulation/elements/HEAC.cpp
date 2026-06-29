@@ -6,7 +6,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_HEAC()
 {
 	Identifier = "DEFAULT_PT_HEAC";
-	Name = "HEAC";
+	Name = "Heat Conductor";
 	Colour = 0xCB6351_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

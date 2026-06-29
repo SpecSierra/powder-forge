@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_MORT()
 {
 	Identifier = "DEFAULT_PT_MORT";
-	Name = "MORT";
+	Name = "Steam Train";
 	Colour = 0xE0E0E0_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_SPECIAL;

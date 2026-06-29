@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_HSWC()
 {
 	Identifier = "DEFAULT_PT_HSWC";
-	Name = "HSWC";
+	Name = "Heat Switch";
 	Colour = 0x3B0A0A_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWERED;

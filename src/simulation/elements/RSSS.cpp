@@ -6,7 +6,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_RSSS()
 {
 	Identifier = "DEFAULT_PT_RSSS";
-	Name = "RSSS";
+	Name = "Solid Resist";
 	Colour = 0xC43626_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

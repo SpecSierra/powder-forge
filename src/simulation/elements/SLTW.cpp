@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_SLTW()
 {
 	Identifier = "DEFAULT_PT_SLTW";
-	Name = "SLTW";
+	Name = "Salt Water";
 	Colour = 0x4050F0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_LIQUID;

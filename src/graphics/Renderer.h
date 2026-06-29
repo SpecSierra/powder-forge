@@ -40,6 +40,11 @@ class Renderer : private RendererSettings, public RasterDrawMethods<Renderer>
 		return video.Size().OriginRect();
 	}
 
+	int GetPixelScale() const
+	{
+		return 1;
+	}
+
 	friend struct RasterDrawMethods<Renderer>;
 
 	RNG rng;
@@ -47,6 +52,13 @@ class Renderer : private RendererSettings, public RasterDrawMethods<Renderer>
 	unsigned char fire_g[YCELLS][XCELLS];
 	unsigned char fire_b[YCELLS][XCELLS];
 	unsigned int fire_alpha[CELL*3][CELL*3];
+
+	// Cloud background
+	static constexpr int CLOUD_TEX_W = XRES * 4; // wide for seamless scroll
+	std::vector<pixel> cloudTex;                  // CLOUD_TEX_W × YRES
+	float cloudOffset = 0.0f;
+	void GenerateCloudTexture();
+	void DrawBackground();
 
 	void DrawBlob(Vec2<int> pos, RGB colour);
 	void DrawWalls();

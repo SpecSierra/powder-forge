@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_PSNS()
 {
 	Identifier = "DEFAULT_PT_PSNS";
-	Name = "PSNS";
+	Name = "Pressure Sensor";
 	Colour = 0xDB2020_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SENSOR;

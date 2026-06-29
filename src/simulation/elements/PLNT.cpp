@@ -8,7 +8,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_PLNT()
 {
 	Identifier = "DEFAULT_PT_PLNT";
-	Name = "PLNT";
+	Name = "Plant";
 	Colour = 0x0CAC00_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

@@ -8,6 +8,8 @@
 #include <variant>
 #include <optional>
 
+class Graphics;
+
 extern int desktopWidth;
 extern int desktopHeight;
 extern SDL_Window *sdl_window;
@@ -33,7 +35,7 @@ ByteString ClipboardPull();
 int GetModifiers();
 unsigned int GetTicks();
 uint64_t GetNowNs();
-void blit(pixel *vid);
+void blit(pixel *vid, Graphics *g);
 void SDLOpen();
 void SDLClose();
 void SDLSetScreen();

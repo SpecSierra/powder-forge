@@ -8,7 +8,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_SEED()
 {
 	Identifier = "DEFAULT_PT_SEED";
-	Name = "SEED";
+	Name = "Seed";
 	Colour = 0x88E788_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_INVIS()
 {
 	Identifier = "DEFAULT_PT_INVIS";
-	Name = "INVS";
+	Name = "Invisible";
 	Colour = 0x00CCCC_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SENSOR;

@@ -7,7 +7,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_VINE()
 {
 	Identifier = "DEFAULT_PT_VINE";
-	Name = "VINE";
+	Name = "Vine";
 	Colour = 0x079A00_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

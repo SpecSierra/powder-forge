@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_IRON()
 {
 	Identifier = "DEFAULT_PT_IRON";
-	Name = "IRON";
+	Name = "Iron";
 	Colour = 0x707070_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

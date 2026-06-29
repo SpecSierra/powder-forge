@@ -7,7 +7,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_DEUT()
 {
 	Identifier = "DEFAULT_PT_DEUT";
-	Name = "DEUT";
+	Name = "Deuterium";
 	Colour = 0x00153F_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_NUCLEAR;

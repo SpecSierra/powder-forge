@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_CBNW()
 {
 	Identifier = "DEFAULT_PT_CBNW";
-	Name = "BUBW";
+	Name = "Carb. Water";
 	Colour = 0x2030D0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_LIQUID;

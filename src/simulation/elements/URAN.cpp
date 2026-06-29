@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_URAN()
 {
 	Identifier = "DEFAULT_PT_URAN";
-	Name = "URAN";
+	Name = "Uranium";
 	Colour = 0x707020_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_NUCLEAR;

@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_POLO()
 {
 	Identifier = "DEFAULT_PT_POLO";
-	Name = "POLO";
+	Name = "Polonium";
 	Colour = 0x506030_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_NUCLEAR;

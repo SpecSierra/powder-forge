@@ -3,7 +3,7 @@
 void Element::Element_INWR()
 {
 	Identifier = "DEFAULT_PT_INWR";
-	Name = "INWR";
+	Name = "Ins. Wire";
 	Colour = 0x544141_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

@@ -8,7 +8,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS);
 void Element::Element_TUNG()
 {
 	Identifier = "DEFAULT_PT_TUNG";
-	Name = "TUNG";
+	Name = "Tungsten";
 	Colour = 0x505050_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

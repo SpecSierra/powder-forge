@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_ACID()
 {
 	Identifier = "DEFAULT_PT_ACID";
-	Name = "ACID";
+	Name = "Acid";
 	Colour = 0xED55FF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_LIQUID;

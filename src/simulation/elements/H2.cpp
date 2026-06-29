@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_H2()
 {
 	Identifier = "DEFAULT_PT_H2";
-	Name = "HYGN";
+	Name = "Hydrogen";
 	Colour = 0x5070FF_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_GAS;

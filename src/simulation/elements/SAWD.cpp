@@ -3,7 +3,7 @@
 void Element::Element_SAWD()
 {
 	Identifier = "DEFAULT_PT_SAWD";
-	Name = "SAWD";
+	Name = "Sawdust";
 	Colour = 0xF0F0A0_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWDERS;

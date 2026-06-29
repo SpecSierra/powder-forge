@@ -8,7 +8,7 @@ static unsigned int wavelengthToDecoColour(int wavelength);
 void Element::Element_CRAY()
 {
 	Identifier = "DEFAULT_PT_CRAY";
-	Name = "CRAY";
+	Name = "C-Ray";
 	Colour = 0xBBFF00_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

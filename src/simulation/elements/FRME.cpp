@@ -5,7 +5,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_FRME()
 {
 	Identifier = "DEFAULT_PT_FRME";
-	Name = "FRME";
+	Name = "Frame";
 	Colour = 0x999988_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_FORCE;

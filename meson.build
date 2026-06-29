@@ -237,6 +237,7 @@ if host_platform == 'emscripten'
 		'-Wl,-u,_emscripten_run_callback_on_thread',
 		'-lidbfs.js',
 		'--source-map-base=./',
+		'--preload-file', meson.source_root() / 'resources' / 'DejaVuSans.ttf' + '@/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
 	]
 	emcc_args = [
 		'-s', 'USE_SDL=2',
@@ -425,7 +426,7 @@ else
 	]
 endif
 
-project_inc = include_directories([ 'src', 'resources', '/usr/include' ])
+project_inc = include_directories([ 'src', 'resources' ])
 
 if host_platform == 'windows'
 	ident_platform = is_64bit ? 'WIN64' : 'WIN32'

@@ -11,7 +11,7 @@ static int MoveStack(Simulation * sim, int stackX, int stackY, int directionX, i
 void Element::Element_PSTN()
 {
 	Identifier = "DEFAULT_PT_PSTN";
-	Name = "PSTN";
+	Name = "Piston";
 	Colour = 0xAA9999_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_FORCE;

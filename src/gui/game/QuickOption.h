@@ -1,5 +1,7 @@
 #pragma once
 #include "common/String.h"
+#include "graphics/Icons.h"
+#include "graphics/Pixel.h"
 #include <vector>
 
 class GameModel;
@@ -24,6 +26,8 @@ protected:
 	Type type;
 	String icon;
 	String description;
+	Icon iconEnum = NoIcon;
+	RGB iconColour = 0xFFFFFF_rgb;
 	QuickOption(String icon, String description, GameModel * m, Type type) :
 		m(m),
 		type(type),
@@ -58,6 +62,8 @@ public:
 
 	String GetIcon() { return icon; }
 	void SetIcon(String icon) { this->icon = icon; }
+	Icon GetIconEnum() { return iconEnum; }
+	RGB GetIconColour() { return iconColour; }
 	String GetDescription() { return description; }
 	void SetDescription(String description) { this->description = description; }
 	void Perform()

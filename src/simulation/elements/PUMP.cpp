@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_PUMP()
 {
 	Identifier = "DEFAULT_PT_PUMP";
-	Name = "PUMP";
+	Name = "Pump";
 	Colour = 0x0A0A3B_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_POWERED;

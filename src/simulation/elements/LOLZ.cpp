@@ -4,7 +4,7 @@
 void Element::Element_LOLZ()
 {
 	Identifier = "DEFAULT_PT_LOLZ";
-	Name = "LOLZ";
+	Name = "Lolz";
 	Colour = 0x569212_rgb;
 	MenuVisible = 0;
 	MenuSection = SC_SPECIAL;

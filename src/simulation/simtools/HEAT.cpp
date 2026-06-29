@@ -5,7 +5,7 @@ static int perform(SimTool *tool, Simulation * sim, Particle * cpart, int x, int
 void SimTool::Tool_HEAT()
 {
 	Identifier = "DEFAULT_TOOL_HEAT";
-	Name = "HEAT";
+	Name = "Heat";
 	Colour = 0xFFDD00_rgb;
 	Description = "Heats the targeted element.";
 	Perform = &perform;

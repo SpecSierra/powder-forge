@@ -3,7 +3,7 @@
 void Element::Element_METL()
 {
 	Identifier = "DEFAULT_PT_METL";
-	Name = "METL";
+	Name = "Metal";
 	Colour = 0x404060_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

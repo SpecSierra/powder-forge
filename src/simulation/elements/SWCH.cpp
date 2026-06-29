@@ -6,7 +6,7 @@ static int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_SWCH()
 {
 	Identifier = "DEFAULT_PT_SWCH";
-	Name = "SWCH";
+	Name = "Switch";
 	Colour = 0x103B11_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;

@@ -5,7 +5,7 @@ static int perform(SimTool *tool, Simulation * sim, Particle * cpart, int x, int
 void SimTool::Tool_AMBP()
 {
 	Identifier = "DEFAULT_TOOL_AMBP";
-	Name = "AMBP";
+	Name = "Amb. Heat";
 	Colour = 0xFFDD00_rgb;
 	Description = "Increases ambient air temperature.";
 	Perform = &perform;

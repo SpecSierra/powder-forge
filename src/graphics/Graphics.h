@@ -3,21 +3,42 @@
 #include "gui/interface/Point.h"
 #include "common/Plane.h"
 #include "SimulationConfig.h"
+#include "PixelScale.h"
 #include "RasterDrawMethods.h"
-#include <array>
+#include <vector>
 
 class Graphics: public RasterDrawMethods<Graphics>
 {
-	PlaneAdapter<std::array<pixel, WINDOW.X * WINDOW.Y>, WINDOW.X, WINDOW.Y> video;
-	Rect<int> clipRect = video.Size().OriginRect();
+	// Native-resolution pixel buffer: WINDOWW*PIXEL_SCALE x WINDOWH*PIXEL_SCALE.
+	// Initialised in the constructor once PIXEL_SCALE is known.
+	PlaneAdapter<std::vector<pixel>> video;
+
+	// Clip rect stays in LOGICAL coordinates (0..WINDOWW, 0..WINDOWH).
+	Rect<int> clipRect;
 
 	friend struct RasterDrawMethods<Graphics>;
 
 public:
+	// Logical size – used by the UI layout engine.
 	Vec2<int> Size() const
+	{
+		return Vec2<int>{ WINDOWW, WINDOWH };
+	}
+
+	// Native (pixel-buffer) size – used when copying the buffer to SDL.
+	Vec2<int> NativeSize() const
 	{
 		return video.Size();
 	}
+
+	int GetPixelScale() const
+	{
+		return PIXEL_SCALE;
+	}
+
+	// Native-resolution text overlay for crispy text at any display scale.
+	NativeTextOverlay nativeText;
+	NativeTextOverlay *GetNativeTextOverlay() { return &nativeText; }
 
 	pixel const *Data() const
 	{

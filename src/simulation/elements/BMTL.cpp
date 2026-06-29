@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_BMTL()
 {
 	Identifier = "DEFAULT_PT_BMTL";
-	Name = "BMTL";
+	Name = "Break. Metal";
 	Colour = 0x505070_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_SOLIDS;

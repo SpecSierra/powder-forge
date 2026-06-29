@@ -5,7 +5,7 @@ static int update(UPDATE_FUNC_ARGS);
 void Element::Element_DRAY()
 {
 	Identifier = "DEFAULT_PT_DRAY";
-	Name = "DRAY";
+	Name = "D-Ray";
 	Colour = 0xFFAA22_rgb;
 	MenuVisible = 1;
 	MenuSection = SC_ELEC;
