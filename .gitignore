@@ -102,3 +102,7 @@ screenshot_*
 /font/
 compile_commands.json
 ignore/
+
+# Powder Forge: allow docs and these must come AFTER *.png / *.py rules above
+!docs/
+!docs/**

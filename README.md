@@ -4,6 +4,8 @@ A modernised web interface for [The Powder Toy](https://powdertoy.co.uk) — the
 
 **[▶ Play in your browser](https://powder-forge.pages.dev)**
 
+![Powder Forge screenshot](docs/screenshot.png)
+
 ---
 
 ## What's different from The Powder Toy
