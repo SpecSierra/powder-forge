@@ -222,6 +222,9 @@ simulation_elem_names = [
 	'H2S',
 	'SLPH', 'CLAY', 'TARZ', 'MUSH', 'MAGN', 'CRYS', 'SLME', 'PEAT', 'ALGN', 'NAPE',
 	'DIRT', 'GRVL', 'MUD', 'HUMS', 'CALK',
+	'CRUD',
+	'KELP', 'CRLA', 'PLNK', 'JLLY', 'CLAM', 'FISH', 'FROG', 'LILY',
+	'STEL', 'METH', 'CHAR', 'CONC', 'RUST', 'PHOS', 'SODA', 'PLSC', 'PAPE', 'ASPH',
 ]
 
 simulation_elem_src = []

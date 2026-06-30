@@ -80,5 +80,13 @@ static int update(UPDATE_FUNC_ARGS)
 			parts[i].tmp--;
 		}
 	}
+
+	// Anaerobic decomposition: peat releases methane (bog gas)
+	if (parts[i].temp > 280.0f && parts[i].temp < 450.0f && sim->rng.chance(1, 1500))
+	{
+		//@ PEAT (280-450K) -> METH (anaerobic decomposition, bog gas)
+		sim->create_part(-1, x + sim->rng.between(-1,1), y - 1, PT_METH);
+	}
+
 	return 0;
 }

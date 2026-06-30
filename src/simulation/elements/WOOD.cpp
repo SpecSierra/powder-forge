@@ -61,6 +61,24 @@ static int update(UPDATE_FUNC_ARGS)
 		parts[i].temp = temp;
 	}
 
+	// Pyrolysis: wood slowly charcoalifies when heated without direct flame
+	if (parts[i].temp > 450.0f && parts[i].temp < 650.0f && sim->rng.chance(1, 300))
+	{
+		bool hasFire = false;
+		for (auto rx = -1; rx <= 1 && !hasFire; rx++)
+		for (auto ry = -1; ry <= 1 && !hasFire; ry++) {
+			if (!rx && !ry) continue;
+			auto r = pmap[y+ry][x+rx];
+			if (r && TYP(r) == PT_FIRE) hasFire = true;
+		}
+		if (!hasFire)
+		{
+			//@ WOOD (450-650K, no FIRE) -> CHAR (pyrolysis / charcoal kiln)
+			sim->part_change_type(i, x, y, PT_CHAR);
+			return 1;
+		}
+	}
+
 	return 0;
 }
 

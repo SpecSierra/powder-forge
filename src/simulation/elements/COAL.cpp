@@ -64,6 +64,24 @@ int Element_COAL_update(UPDATE_FUNC_ARGS)
 	if (parts[i].life >= 100 && parts[i].temp > 350.0f && parts[i].temp < 600.0f && sim->rng.chance(1, 2000))
 		sim->create_part(-1, x + sim->rng.between(-1,1), y - 1, PT_TARZ); //@ COAL (350-600K) -> TARZ (coal tar distillation)
 
+	// Blast furnace steelmaking: coal carburises molten iron at extreme temperature
+	if (parts[i].life >= 100 && parts[i].temp > 1500.0f)
+	{
+		for (auto rx = -1; rx <= 1; rx++)
+		for (auto ry = -1; ry <= 1; ry++)
+		{
+			if (!rx && !ry) continue;
+			auto r = pmap[y+ry][x+rx];
+			if (r && TYP(r) == PT_LAVA && parts[ID(r)].ctype == PT_IRON && sim->rng.chance(1, 30))
+			{
+				//@ COAL + IRON(LAVA) at >1500K -> STEL (blast furnace steelmaking)
+				sim->part_change_type(ID(r), x+rx, y+ry, PT_STEL);
+				sim->kill_part(i); // coal consumed
+				return 1;
+			}
+		}
+	}
+
 	if (parts[i].type == PT_COAL)
 	{
 		if ((sim->pv[y/CELL][x/CELL] > 4.3f)&&parts[i].tmp>40)
