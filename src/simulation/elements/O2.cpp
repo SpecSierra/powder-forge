@@ -47,6 +47,15 @@ void Element::Element_O2()
 
 static int update(UPDATE_FUNC_ARGS)
 {
+	// Electrical discharge converts O2 to ozone
+	auto ep = sim->photons[y][x];
+	if (ep && TYP(ep) == PT_ELEC && sim->rng.chance(1, 100))
+	{
+		//@ O2 + ELEC -> OZON (ozone formation from electrical discharge)
+		sim->part_change_type(i, x, y, PT_OZON);
+		return 1;
+	}
+
 	auto &sd = SimulationData::CRef();
 	auto &can_move = sd.can_move;
 	for (auto rx = -2; rx <= 2; rx++)

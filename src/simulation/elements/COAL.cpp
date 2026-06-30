@@ -57,7 +57,13 @@ int Element_COAL_update(UPDATE_FUNC_ARGS)
 	} else if (parts[i].life < 100) {
 		parts[i].life--;
 		sim->create_part(-1, x + sim->rng.between(-1, 1), y + sim->rng.between(-1, 1), PT_FIRE);
+		if (sim->rng.chance(1, 400))
+			sim->create_part(-1, x + sim->rng.between(-2, 2), y - 1, PT_SO2); //@ COAL burning -> SO2 (sulfur content)
 	}
+	// Coal distillation: when heated but not yet burning, emit coal tar
+	if (parts[i].life >= 100 && parts[i].temp > 350.0f && parts[i].temp < 600.0f && sim->rng.chance(1, 2000))
+		sim->create_part(-1, x + sim->rng.between(-1,1), y - 1, PT_TARZ); //@ COAL (350-600K) -> TARZ (coal tar distillation)
+
 	if (parts[i].type == PT_COAL)
 	{
 		if ((sim->pv[y/CELL][x/CELL] > 4.3f)&&parts[i].tmp>40)
