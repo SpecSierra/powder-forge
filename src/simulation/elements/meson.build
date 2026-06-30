@@ -221,6 +221,7 @@ simulation_elem_names = [
 	'NO2',
 	'H2S',
 	'SLPH', 'CLAY', 'TARZ', 'MUSH', 'MAGN', 'CRYS', 'SLME', 'PEAT', 'ALGN', 'NAPE',
+	'DIRT', 'GRVL', 'MUD', 'HUMS', 'CALK',
 ]
 
 simulation_elem_src = []

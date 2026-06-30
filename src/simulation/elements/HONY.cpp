@@ -57,14 +57,14 @@ static int update(UPDATE_FUNC_ARGS)
 
 		if (TYP(r) == PT_YEST
 			&& parts[i].temp > 283.0f && parts[i].temp < 360.0f
-			&& sim->rng.chance(1, 250))
+			&& sim->rng.chance(1, 80))
 		{
 			//@ HONY + YEST -> ALCH + CO2 (mead fermentation)
 			sim->part_change_type(i, x, y, PT_ALCH);
 			sim->create_part(-1, x + sim->rng.between(-1, 1), y + sim->rng.between(-1, 1), PT_CO2);
 			return 1;
 		}
-		if ((TYP(r) == PT_WATR || TYP(r) == PT_DSTW) && sim->rng.chance(1, 300))
+		if ((TYP(r) == PT_WATR || TYP(r) == PT_DSTW) && sim->rng.chance(1, 80))
 		{
 			//@ HONY + WATR/DSTW -> 2xSGWT (dilutes into sugar water)
 			sim->part_change_type(i, x, y, PT_SGWT);

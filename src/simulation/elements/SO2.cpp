@@ -54,7 +54,7 @@ static int update(UPDATE_FUNC_ARGS)
 		auto r = pmap[y+ry][x+rx];
 		if (!r) continue;
 
-		if ((TYP(r) == PT_WATR || TYP(r) == PT_DSTW) && sim->rng.chance(1, 100))
+		if ((TYP(r) == PT_WATR || TYP(r) == PT_DSTW) && sim->rng.chance(1, 25))
 		{
 			//@ SO2 + WATR/DSTW -> ACID (sulfurous acid / acid rain)
 			sim->kill_part(i);

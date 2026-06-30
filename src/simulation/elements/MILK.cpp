@@ -24,7 +24,7 @@ void Element::Element_MILK()
 	Flammable = 0;
 	Explosive = 0;
 	Meltable  = 0;
-	Hardness  = 20;
+	Hardness  = 0; // handle acid manually — ACID produces CURD, not dissolve
 
 	Weight = 31;
 
@@ -55,15 +55,15 @@ static int update(UPDATE_FUNC_ARGS)
 		auto r = pmap[y+ry][x+rx];
 		if (!r) continue;
 
-		if ((TYP(r) == PT_ACID || TYP(r) == PT_CAUS) && sim->rng.chance(1, 20))
+		if ((TYP(r) == PT_ACID || TYP(r) == PT_CAUS) && sim->rng.chance(1, 5))
 		{
-			//@ MILK + ACID/CAUS -> CURD (curdles instantly)
+			//@ MILK + ACID/CAUS -> CURD (curdles near-instantly)
 			sim->part_change_type(i, x, y, PT_CURD);
 			return 1;
 		}
-		if (TYP(r) == PT_YEST && sim->rng.chance(1, 100))
+		if (TYP(r) == PT_YEST && sim->rng.chance(1, 40))
 		{
-			//@ MILK + YEST -> CURD + CO2 (slow fermentation)
+			//@ MILK + YEST -> CURD + CO2 (fermentation)
 			sim->part_change_type(i, x, y, PT_CURD);
 			sim->create_part(-1, x + sim->rng.between(-1, 1), y + sim->rng.between(-1, 1), PT_CO2);
 			return 1;

@@ -54,7 +54,7 @@ static int update(UPDATE_FUNC_ARGS)
 		auto r = pmap[y+ry][x+rx];
 		if (!r) continue;
 
-		if ((TYP(r) == PT_WATR || TYP(r) == PT_DSTW) && sim->rng.chance(1, 80))
+		if ((TYP(r) == PT_WATR || TYP(r) == PT_DSTW) && sim->rng.chance(1, 30))
 		{
 			//@ NO2 + WATR/DSTW -> ACID (nitric acid: 3NO2 + H2O -> 2HNO3 + NO)
 			sim->kill_part(i);

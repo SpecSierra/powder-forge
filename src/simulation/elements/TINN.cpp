@@ -54,9 +54,17 @@ static int update(UPDATE_FUNC_ARGS)
 		auto r = pmap[y+ry][x+rx];
 		if (!r) continue;
 
-		if (TYP(r) == PT_LEAD && parts[i].temp > 450.0f && sim->rng.chance(1, 150))
+		if (TYP(r) == PT_LEAD && parts[i].temp > 350.0f && sim->rng.chance(1, 20))
 		{
-			//@ TINN + LEAD (>450K) -> 2xSOLD (eutectic solder alloy)
+			//@ TINN + LEAD (>350K) -> 2xSOLD (eutectic solder alloy)
+			sim->part_change_type(i, x, y, PT_SOLD);
+			sim->part_change_type(ID(r), x+rx, y+ry, PT_SOLD);
+			return 1;
+		}
+		// Smelting path: LAVA(LEAD) contacts TINN -> SOLD
+		if (TYP(r) == PT_LAVA && parts[ID(r)].ctype == PT_LEAD && sim->rng.chance(1, 15))
+		{
+			//@ TINN + LAVA(LEAD) -> 2xSOLD (smelted solder)
 			sim->part_change_type(i, x, y, PT_SOLD);
 			sim->part_change_type(ID(r), x+rx, y+ry, PT_SOLD);
 			return 1;

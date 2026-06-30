@@ -56,20 +56,39 @@ static int update(UPDATE_FUNC_ARGS)
 		auto r = pmap[y+ry][x+rx];
 		if (!r) continue;
 
-		if (TYP(r) == PT_ZINC && parts[i].temp > 500.0f && sim->rng.chance(1, 100))
+		// Solid+solid: works above 350K (gentle heat)
+		if (TYP(r) == PT_ZINC && parts[i].temp > 350.0f && sim->rng.chance(1, 20))
 		{
-			//@ COPR + ZINC (>500K) -> 2xBRAS (brass alloy forms)
+			//@ COPR + ZINC (>350K) -> 2xBRAS (brass alloy forms)
 			sim->part_change_type(i, x, y, PT_BRAS);
 			sim->part_change_type(ID(r), x+rx, y+ry, PT_BRAS);
 			return 1;
 		}
-		if (TYP(r) == PT_TINN && parts[i].temp > 400.0f && sim->rng.chance(1, 100))
+		if (TYP(r) == PT_TINN && parts[i].temp > 350.0f && sim->rng.chance(1, 20))
 		{
-			//@ COPR + TINN (>400K) -> 2xBRNZ (bronze alloy forms)
+			//@ COPR + TINN (>350K) -> 2xBRNZ (bronze alloy forms)
 			sim->part_change_type(i, x, y, PT_BRNZ);
 			sim->part_change_type(ID(r), x+rx, y+ry, PT_BRNZ);
 			return 1;
 		}
+
+		// Smelting path: FIRE melts tin/zinc into LAVA, LAVA+COPR -> alloy
+		// (most natural recipe: apply fire, metals melt and mix)
+		if (TYP(r) == PT_LAVA && parts[ID(r)].ctype == PT_TINN && sim->rng.chance(1, 15))
+		{
+			//@ COPR + LAVA(TINN) -> 2xBRNZ (tin smelting into copper)
+			sim->part_change_type(i, x, y, PT_BRNZ);
+			sim->part_change_type(ID(r), x+rx, y+ry, PT_BRNZ);
+			return 1;
+		}
+		if (TYP(r) == PT_LAVA && parts[ID(r)].ctype == PT_ZINC && sim->rng.chance(1, 15))
+		{
+			//@ COPR + LAVA(ZINC) -> 2xBRAS (zinc smelting into copper)
+			sim->part_change_type(i, x, y, PT_BRAS);
+			sim->part_change_type(ID(r), x+rx, y+ry, PT_BRAS);
+			return 1;
+		}
+
 		if (TYP(r) == PT_ACID && sim->rng.chance(1, 30))
 		{
 			//@ COPR + ACID -> CAUS (copper dissolves, forms corrosive copper compound)
@@ -82,7 +101,6 @@ static int update(UPDATE_FUNC_ARGS)
 
 static int graphics(GRAPHICS_FUNC_ARGS)
 {
-	// Subtle reddish shimmer to distinguish from IRON/METL
 	int rndstore = gfctx.rng.gen();
 	*colr += (rndstore % 8);
 	rndstore >>= 3;
